@@ -3,16 +3,16 @@ var os = require('os');
 var exec = require('child_process').exec;
 var platform = os.platform();
 
-//console.log(os.getNetworkInterfaces())
-
-
 var Platform = {
-    ip: os.networkInterfaces()['en0'],
+    interfaces: os.networkInterfaces(),
     isMac: platform === 'darwin',
     isWin: platform === 'win32'
 };
+//console.log(Platform)
 
-console.log(Platform);
+for(var i in Platform.interfaces) {
+    //console.log(Platform.interfaces[i])
+}
 
 //Apache
 var Apache = function() {
@@ -108,12 +108,14 @@ Httpd.prototype = {
         this.readFile(function(data) {
             _this.cache.data = data;
             var list = _this.getList(data);
+            //console.log(list);
             if(!list) {
                 console.log('没有匹配到内容, 可能是文件不对');
                 return;
             }
             list.forEach(function(item) {
                 var obj = _this.getObj(item);
+                //console.log(obj);
                 _this.cache.items.push(obj);
             });
             
@@ -253,7 +255,7 @@ Httpd.prototype = {
     }
 };
 
-new Httpd().init();
+//new Httpd().init();
 
 
 /*var httpd = new Httpd();
@@ -264,3 +266,9 @@ var getList = function() {
     })
 };
 getList();*/
+
+module.exports = {
+    platform: Platform,
+    apache: Apache,
+    httpd: Httpd
+};
