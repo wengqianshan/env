@@ -39,7 +39,8 @@ block footer-js
       dataType: 'jsonp',
       success: function(json) {
         //console.log(json);
-        $('#J_httpd').val(JSON.stringify(json));
+        var text = JSON.stringify(json);
+        $('#J_httpd').val(text.replace(/(\\r)?\\n/g, '\r\n'));
       }
     });
     $('#J_put').on('click', function() {
