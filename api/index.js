@@ -298,20 +298,7 @@ Httpd.prototype = {
             template.push(this.createProxy(option.proxy));
         }
         template.push('</VirtualHost>');
-        //TODO:加入代理
-        /*fs.writeFile(this.path, template, {
-            flag: 'a'
-        }, function(err) {
-            var action, data;
-            if (err) {
-                action = false;
-            } else {
-                action = true;
-                data = template;
-            }
-            callback && callback.call(null, action, data);
-        });*/
-        var result = fs.writeFileSync(this.path, template, {
+        var result = fs.writeFileSync(this.path, template.join(''), {
             flag: 'a'
         });
         this.readFileSync();

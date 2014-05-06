@@ -60,7 +60,7 @@ router.get('/api/vhost', function(req, res) {
 
 
 
-//单个
+//获取单个
 router.get('/api/vhost/:name', function(req, res) {
     var name = req.params.name;
     var obj = httpd.getItem(name);
