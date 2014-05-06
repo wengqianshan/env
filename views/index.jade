@@ -13,12 +13,15 @@ block content
       input(type='text', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')
     input(type='submit')
   div
-    button(id='J_restart')重启Apache
+    button(id='J_restart') 重启Apache
   div
     textarea(id='J_host',rows='10',cols='100')
     br
     button(id='J_read') 读取host
     button(id='J_write') 写入host
+  div
+    button(id='J_put') PUT
+    button(id='J_delete') DELETE
 
 block footer-js
   script(src='/js/jquery.min.js')
@@ -34,6 +37,26 @@ block footer-js
         //console.log(json);
         $('#J_httpd').val(JSON.stringify(json));
       }
+    });
+    $('#J_put').on('click', function() {
+      $.ajax({
+        url: '/api/vhost/localhost',
+        type: 'put',
+        dataType: 'jsonp',
+        success: function(json) {
+          console.log(json);
+        }
+      });
+    });
+    $('#J_delete').on('click', function() {
+      $.ajax({
+        url: '/api/vhost/qianshan.com',
+        type: 'delete',
+        dataType: 'jsonp',
+        success: function(json) {
+          console.log(json);
+        }
+      });
     });
     //重启apache
     $('#J_restart').on('click', function() {

@@ -86,16 +86,6 @@ router.get('/api/vhost/:name', function(req, res) {
     res.jsonp(jsonp);
 });
 
-//删除
-router.delete('/api/vhost/:name', function(req, res) {
-    var name = req.params.name;
-    var result = httpd.removeItem(name);
-    var jsonp = {
-        success: !result,
-        data: result
-    };
-});
-
 //新增
 router.post('/api/vhost/', function(req, res) {
     var name = req.body.name;
@@ -144,6 +134,17 @@ router.put('/api/vhost/:name', function(req, res) {
     var jsonp = {
         success: true,
         data: conf
+    };
+    res.jsonp(jsonp);
+});
+
+//删除
+router.delete('/api/vhost/:name', function(req, res) {
+    var name = req.params.name;
+    var result = httpd.removeItem(name);
+    var jsonp = {
+        success: !result,
+        data: result
     };
     res.jsonp(jsonp);
 });

@@ -205,11 +205,15 @@ Httpd.prototype = {
     //删除一条数据
     removeItem: function(name) {
         var data = this.getItem(name);
+        if(!data) {
+            console.log('没有' + name + '这个主机');
+            return;            
+        }
         var conf = this.readFileSync().replace(data.input, '');
         var result = fs.writeFileSync(this.path, conf);
-        this.readFileSync();
+        conf = this.readFileSync();
         console.log('删除主机：', result);
-        return result;
+        return conf;
     },
     //更新一个虚拟主机
     updateItem: function(name, options) {
