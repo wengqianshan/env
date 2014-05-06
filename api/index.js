@@ -10,7 +10,7 @@ var Platform = {
 };
 //console.log(Platform)
 
-for(var i in Platform.interfaces) {
+for (var i in Platform.interfaces) {
     //console.log(Platform.interfaces[i])
 }
 
@@ -31,27 +31,27 @@ Apache.prototype = {
     stop: function() {
         exec(this.cmd.stop, function(err, stdout, stderr) {
 
-        });  
+        });
     },
     restart: function() {
         var _this = this;
-        if(Platform.isMac) {
-            exec(this.cmd.restart, function(err, stdout, stderr){
-                if(err) {
+        if (Platform.isMac) {
+            exec(this.cmd.restart, function(err, stdout, stderr) {
+                if (err) {
                     console.log('重启失败:mac');
                     return;
                 }
                 console.log('重启成功:mac')
             });
-        }else{
+        } else {
             //windows
-            exec(this.cmd.stop, function(err, stdout, stderr){
-                if(err) {
+            exec(this.cmd.stop, function(err, stdout, stderr) {
+                if (err) {
                     console.log('停止失败');
                     return;
                 }
-                exec(_this.cmd.start, function(err, stdout, stderr){
-                    if(err) {
+                exec(_this.cmd.start, function(err, stdout, stderr) {
+                    if (err) {
                         console.log('重启失败');
                         return;
                     }
@@ -70,14 +70,16 @@ var Host = function() {
     this.path = Platform.isWin ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts';
 };
 Host.prototype = {
-    read: function() {
-        fs.readFile(this.path, 'utf8', function(err, data){
-            
+    read: function(callback) {
+        var _this = this;
+        fs.readFile(this.path, 'utf8', function(err, data) {
+            callback && callback.call(_this, err, data);
         });
     },
-    write: function(content) {
-        fs.writeFile(this.path, content, function(err){
-
+    write: function(content, callback) {
+        var _this = this;
+        fs.writeFile(this.path, content, function(err) {
+            callback && callback.call(_this, err);
         });
     }
 }
@@ -88,63 +90,64 @@ var Httpd = function() {
         data: null,
         items: []
     };
-    this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    //this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    this.path = 'httpd-vhosts.conf';
     //正则
     this.pattern = {
         vhost: /<VirtualHost\s+[^>]*?>[\s\S]*?<\/VirtualHost>/ig,
         serverName: /ServerName\s+"?(.+)"?/,
         documentRoot: /DocumentRoot\s+("?)(.+)(\1)/,
         proxy: {
-            pass: /ProxyPass( +)+.*( +)+.*\n/ig,
+            pass: /ProxyPass +.* +.*\n/ig,
             request: /ProxyRequests\s+Off\n/ig,
             proxy: /<Proxy\s+[^>]*?>[\s\S]*?<\/Proxy>\n/ig,
-            reverse: /ProxyPassReverse( +)+.*( +).*\n/ig
+            reverse: /ProxyPassReverse +.* +.*\n/ig
         }
     };
 };
 Httpd.prototype = {
     init: function() {
         var _this = this;
-        this.readFile(function(data) {
-            _this.cache.data = data;
-            var list = _this.getList(data);
-            //console.log(list);
-            if(!list) {
-                console.log('没有匹配到内容, 可能是文件不对');
-                return;
-            }
-            list.forEach(function(item) {
-                var obj = _this.getObj(item);
-                //console.log(obj);
-                _this.cache.items.push(obj);
-            });
-            
-            var conf = _this.updateItem('webapp.dev', {
-                name: 'laiwang.com',
-                root: '/etc/host/',
-                proxy: [
-                    {
-                        path: '/',
-                        proxy: 'http://127.0.0.1:3000/'
-                    },{
-                        path: '/js',
-                        proxy: 'http://127.0.0.1:3000/js'
-                    }
-                ]
-            });
-            //console.log(conf)
-            //fs.writeFile('c.txt', conf);
+        this.readFileSync();
+        /*var conf = _this.updateItem('webapp.dev', {
+            name: 'laiwang.com',
+            root: '/etc/host/',
+            proxy: [{
+                path: '/',
+                proxy: 'http://127.0.0.1:3000/'
+            }, {
+                path: '/js',
+                proxy: 'http://127.0.0.1:3000/js'
+            }]
         });
+        console.log(conf);*/
+        //fs.writeFile('c.txt', conf);
+    },
+    //获取配置文件
+    getData: function() {
+        //return this.cache.data || this.readFileSync();
+        return this.readFileSync();
     },
     //读取vhost文件
-    readFile: function(callback) {
+    readFileSync: function() {
+        console.log('读取vhost文件...');
         var _this = this;
-        fs.readFile(this.path, 'utf8', function(error, data) {
-            if(error) {
-                return;
-            }
-            callback && callback.call(_this, data);
+        var data = fs.readFileSync(this.path, 'utf8');
+        if (!data) {
+            console.log('读取vhost文件失败');
+            return data;
+        }
+        this.cache.data = data;
+        var list = this.getList(data);
+        if (!list) {
+            console.log('没有匹配到内容, 可能是文件不对');
+            return data;
+        }
+        list.forEach(function(item) {
+            var obj = _this.getObj(item);
+            _this.cache.items.push(obj);
         });
+        return data;
     },
     //获取列表
     getList: function(data) {
@@ -152,6 +155,7 @@ Httpd.prototype = {
     },
     //获取对象
     getObj: function(data) {
+        var _this = this;
         var name = data.match(this.pattern.serverName);
         var root = data.match(this.pattern.documentRoot);
         //var proxy = data.match(this.pattern.proxy.reverse);
@@ -161,6 +165,17 @@ Httpd.prototype = {
             proxy: data.match(this.pattern.proxy.proxy),
             reverse: data.match(this.pattern.proxy.reverse)
         };
+        if(proxy.pass) {
+            proxy.list = [];
+            proxy.pass.forEach(function(item) {
+                var list = item.split(/\s+/);
+                proxy.list.push({
+                    dir: list[1],
+                    path: list[2]
+                });
+                
+            });
+        }
         return {
             name: name[1],
             root: root[2],
@@ -170,7 +185,9 @@ Httpd.prototype = {
     },
     //获取一条数据
     getItem: function(name) {
+        this.getData();
         if (this.cache.items.length <= 0) {
+            console.log('尚未读取到vhost文件');
             return;
         }
         var result = null;
@@ -182,10 +199,19 @@ Httpd.prototype = {
         });
         return result;
     },
+    //删除一条数据
+    removeItem: function(name) {
+        var data = this.getItem(name);
+        var conf = this.readFileSync().replace(data.input, '');
+        var result = fs.writeFileSync(this.path, conf);
+        this.readFileSync();
+        console.log('删除主机：', result);
+        return result;
+    },
     //更新一个虚拟主机
     updateItem: function(name, options) {
         var obj = this.getItem(name);
-        if(!obj) {
+        if (!obj) {
             console.log('虚拟主机' + name + '不存在');
             return;
         }
@@ -252,23 +278,50 @@ Httpd.prototype = {
             strs.push('ProxyPassReverse ' + item.path + ' ' + item.proxy + '\n');
         });
         return strs.join('');
+    },
+    //创建虚拟主机
+    createVhost: function(option) {
+        var template = [
+            '\n##############################\n#' + (option.comment || option.name) + '\n##############################\n',
+            '<VirtualHost *:80>\n',
+                'ServerAdmin ' + (option.admin || 'admin@admin.com') + '\n',
+                'DocumentRoot "' + option.root + '"\n',
+                'ServerName ' + option.name + '\n',
+                '<Directory "' + option.root + '">\n',
+                    'Options Indexes FollowSymLinks\n',
+                    'AllowOverride All\n',
+                    'Order allow,deny\n',
+                    'Allow from all\n',
+                '</Directory>\n'
+        ];
+        if(option.proxy) {
+            template.push(this.createProxy(option.proxy));
+        }
+        template.push('</VirtualHost>');
+        //TODO:加入代理
+        /*fs.writeFile(this.path, template, {
+            flag: 'a'
+        }, function(err) {
+            var action, data;
+            if (err) {
+                action = false;
+            } else {
+                action = true;
+                data = template;
+            }
+            callback && callback.call(null, action, data);
+        });*/
+        var result = fs.writeFileSync(this.path, template, {
+            flag: 'a'
+        });
+        this.readFileSync();
+        return result;
     }
 };
-
-//new Httpd().init();
-
-
-/*var httpd = new Httpd();
-var getList = function() {
-    httpd.readFile(function(data) {
-        var list = this.getList(data);
-        console.log(list);
-    })
-};
-getList();*/
 
 module.exports = {
     platform: Platform,
     apache: Apache,
-    httpd: Httpd
+    httpd: Httpd,
+    host: Host
 };
