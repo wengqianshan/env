@@ -2,9 +2,11 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
-  textarea(id='J_httpd',rows='10',cols='100')
-  form(action="/api/vhost/", method='post')
+  .box
+    h3 读取vhost
+    textarea(id='J_httpd',rows='10',cols='100')
+  form(action="/api/vhost/", method='post').box
+    h3 添加vhost
     label
       input(type='text', name='name', autofocus)
     label
@@ -12,14 +14,16 @@ block content
     label
       input(type='text', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')
     input(type='submit')
-  div
+  .box
     button(id='J_restart') 重启Apache
-  div
+  .box
+    h3 host操作
     textarea(id='J_host',rows='10',cols='100')
     br
     button(id='J_read') 读取host
     button(id='J_write') 写入host
-  div
+  .box
+    h3 vhost测试
     button(id='J_put') PUT
     button(id='J_delete') DELETE
 

@@ -8,3 +8,8 @@ a {
 label{
     display: block;
 }
+.box{
+    padding: 20px;
+    border: 2px solid #eee;
+    margin: 10px 0;
+}

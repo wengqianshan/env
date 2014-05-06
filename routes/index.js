@@ -12,7 +12,7 @@ var apache = new api.apache();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: '本地环境工具' });
 });
 
 router.post('/', function(req, res) {
@@ -92,11 +92,20 @@ router.post('/api/vhost/', function(req, res) {
     var root = req.body.root;
     var proxy = req.body.proxy;
     if(!name) {
-        console.log('');
+        console.log('name不能为空');
         return;
     }
+    var item = httpd.getItem(name);
+    console.log(item);
+    if(item) {
+        return res.jsonp({
+            success: false,
+            data: item,
+            message: '该配置已存在'
+        });
+    }
     if(!root) {
-        console.log('');
+        console.log('root不能为空');
         return;
     }
     var obj = {
