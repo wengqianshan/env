@@ -33,10 +33,11 @@ Apache.prototype = {
 
         });
     },
-    restart: function() {
+    restart: function(callback) {
         var _this = this;
         if (Platform.isMac) {
             exec(this.cmd.restart, function(err, stdout, stderr) {
+                callback && callback.call(_this, err, stdout, stderr);
                 if (err) {
                     console.log('重启失败:mac');
                     return;
@@ -47,10 +48,12 @@ Apache.prototype = {
             //windows
             exec(this.cmd.stop, function(err, stdout, stderr) {
                 if (err) {
+                    callback && callback.call(_this, err, stdout, stderr);
                     console.log('停止失败');
                     return;
                 }
                 exec(_this.cmd.start, function(err, stdout, stderr) {
+                    callback && callback.call(_this, err, stdout, stderr);
                     if (err) {
                         console.log('重启失败');
                         return;
@@ -78,7 +81,7 @@ Host.prototype = {
     },
     write: function(content, callback) {
         var _this = this;
-        fs.writeFile(this.path, content, function(err) {
+        fs.writeFile(this.path, content, function(err, data) {
             callback && callback.call(_this, err);
         });
     }

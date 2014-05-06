@@ -7,6 +7,8 @@ httpd.init();
 
 var host = new api.host();
 
+var apache = new api.apache();
+
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -17,6 +19,18 @@ router.post('/', function(req, res) {
     console.log(req.body);
     res.jsonp(req.body);
 })
+
+router.post('/api/apache/restart', function(req, res) {
+    apache.restart(function(err, stdout, stderr) {
+        //console.log(err, stdout, stderr);
+        var jsonp = {
+            success: !err,
+            data: stdout
+        };
+        res.jsonp(jsonp);
+    });
+});
+
 
 //host
 router.get('/api/host', function(req, res) {
@@ -34,10 +48,11 @@ router.post('/api/host', function(req, res) {
     host.write(content, function(err) {
         var jsonp = {
             success: !err,
-            err: err
+            data: content
         };
-    });
-});
+        res.jsonp(jsonp);
+    })
+})
 
 
 //vhost

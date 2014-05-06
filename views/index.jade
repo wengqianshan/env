@@ -3,6 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  textarea(id='J_httpd',rows='10',cols='100')
   form(action="/api/vhost/", method='post')
     label
       input(type='text', name='name', autofocus)
@@ -11,6 +12,13 @@ block content
     label
       input(type='text', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')
     input(type='submit')
+  div
+    button(id='J_restart')重启Apache
+  div
+    textarea(id='J_host',rows='10',cols='100')
+    br
+    button(id='J_read') 读取host
+    button(id='J_write') 写入host
 
 block footer-js
   script(src='/js/jquery.min.js')
@@ -23,7 +31,46 @@ block footer-js
       type: 'get',
       dataType: 'jsonp',
       success: function(json) {
-        console.log(json);
+        //console.log(json);
+        $('#J_httpd').val(JSON.stringify(json));
       }
-    })
+    });
+    //重启apache
+    $('#J_restart').on('click', function() {
+      console.log('重启');
+      $.ajax({
+        url: '/api/apache/restart',
+        type: 'post',
+        dataType: 'jsonp',
+        success: function(json) {
+          console.log(json);
+        }
+      });
+    });
+    //host
+    $('#J_read').on('click', function() {
+      $.ajax({
+        url: '/api/host',
+        type: 'get',
+        dataType: 'jsonp',
+        success: function(json) {
+          console.log(json);
+          $('#J_host').val(json.data);
+        }
+      });
+    });
+    $('#J_write').on('click', function() {
+      $.ajax({
+        url: '/api/host',
+        type: 'post',
+        data: {
+          content: $('#J_host').val()
+        },
+        dataType: 'jsonp',
+        success: function(json) {
+          console.log(json);
+          $('#J_host').val(json.data);
+        }
+      });
+    });
 
