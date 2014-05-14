@@ -15,7 +15,7 @@ block content
       .form-group
         label.control-label.col-md-2 Name
         .col-md-6
-          input.form-control(type='text', name='name', autofocus)
+          input.form-control(type='text', name='name')
       .form-group
         label.control-label.col-md-2 Root
         .col-md-6
@@ -28,12 +28,12 @@ block content
           input.btn.btn-primary(type='submit')
       
     .box
-      button.btn.btn-primary(id='J_restart') 重启Apache
+      button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
     .box
       h3 host操作
       textarea.form-control(id='J_host',rows='10',cols='100')
       br
-      button.btn.btn-info(id='J_read') 读取host
+      button.btn.btn-info(id='J_read', data-loading-text='读取中') 读取host
       button.btn.btn-danger(id='J_write') 写入host
     .box
       h3 vhost测试
@@ -78,23 +78,29 @@ block footer-js
     //重启apache
     $('#J_restart').on('click', function() {
       console.log('重启');
+      var $btn = $(this);
+      $btn.button('loading');
       $.ajax({
         url: '/api/apache/restart',
         type: 'post',
         dataType: 'jsonp',
         success: function(json) {
           console.log(json);
+          $btn.button('reset');
         }
       });
     });
     //host
     $('#J_read').on('click', function() {
+      var $btn = $(this);
+      $btn.button('loading');
       $.ajax({
         url: '/api/host',
         type: 'get',
         dataType: 'jsonp',
         success: function(json) {
           console.log(json);
+          $btn.button('reset');
           $('#J_host').val(json.data);
         }
       });
