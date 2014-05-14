@@ -2,33 +2,45 @@ extends layout
 
 block content
   h1= title
-  .box
-    h3 读取vhost
-    textarea(id='J_httpd',rows='10',cols='100')
-  form(action="/api/vhost/", method='post').box
-    h3 添加vhost
-    label
-      input(type='text', name='name', autofocus)
-    label
-      input(type='text', name='root')
-    label
-      input(type='text', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')
-    input(type='submit')
-  .box
-    button(id='J_restart') 重启Apache
-  .box
-    h3 host操作
-    textarea(id='J_host',rows='10',cols='100')
-    br
-    button(id='J_read') 读取host
-    button(id='J_write') 写入host
-  .box
-    h3 vhost测试
-    button(id='J_put') PUT
-    button(id='J_delete') DELETE
+  .container
+    .row
+      .col-md-12
+        h3 读取vhost
+        textarea.form-control(id='J_httpd',rows='10',cols='100')  
+    //- .box
+    //-   h3 读取vhost
+    //-   textarea.form-control(id='J_httpd',rows='10',cols='100')
+    form.form-horizontal(action="/api/vhost/", method='post').box
+      h3 添加vhost
+      .form-group
+        label.control-label.col-md-2 Name
+        .col-md-6
+          input.form-control(type='text', name='name', autofocus)
+      .form-group
+        label.control-label.col-md-2 Root
+        .col-md-6
+          input.form-control(type='text', name='root')
+      .form-group
+        .col-md-6.col-md-offset-2
+          input.form-control(type='text', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')  
+      .form-group
+        .col-md-6.col-md-offset-2
+          input.btn.btn-primary(type='submit')
+      
+    .box
+      button.btn.btn-primary(id='J_restart') 重启Apache
+    .box
+      h3 host操作
+      textarea.form-control(id='J_host',rows='10',cols='100')
+      br
+      button.btn.btn-info(id='J_read') 读取host
+      button.btn.btn-danger(id='J_write') 写入host
+    .box
+      h3 vhost测试
+      button.btn.btn-info(id='J_put') PUT
+      button.btn.btn-danger(id='J_delete') DELETE
 
 block footer-js
-  script(src='/js/jquery.min.js')
   script.
     //- $.getJSONP('/api/vhost/', function(json) {
     //-     console.log(json)
