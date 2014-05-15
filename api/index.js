@@ -141,6 +141,7 @@ Httpd.prototype = {
             return data;
         }
         this.cache.data = data;
+        _this.cache.items = [];
         var list = this.getList(data);
         if (!list) {
             console.log('没有匹配到内容, 可能是文件不对');
@@ -282,8 +283,8 @@ Httpd.prototype = {
             '</Proxy>\n'
         ];
         proxy.forEach(function(item) {
-            strs.push('ProxyPass ' + item.path + ' ' + item.proxy + '\n');
-            strs.push('ProxyPassReverse ' + item.path + ' ' + item.proxy + '\n');
+            strs.push('ProxyPass ' + item.dir + ' ' + item.path + '\n');
+            strs.push('ProxyPassReverse ' + item.dir + ' ' + item.path + '\n');
         });
         return strs.join('');
     },

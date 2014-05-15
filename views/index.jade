@@ -1,12 +1,11 @@
 extends layout
 
 block content
-	h1= title
 	.container
 		.row
 			.col-md-12
-				h3 读取vhost
-				textarea.form-control(id='J_httpd',rows='10',cols='100') 
+				//h3 读取vhost
+				//textarea.form-control(id='J_httpd',rows='10',cols='100') 
 		.row
 			.col-md-12
 				table.table.table-striped.table-bordered
@@ -17,94 +16,58 @@ block content
 							th 本地路径
 							th 操作
 					tbody#J_vhost_list
-						tr(data-name='', data-root='', data-proxy='', data-input='')
-							td ouyo.info
-							td /Users/xiaoshan/www
-							td
-								a.btn.btn-sm.btn-info(href='#')
-									span.glyphicon.glyphicon-pencil
-								a.btn.btn-sm.btn-danger(href='#')
-									span.glyphicon.glyphicon-remove
-						tr
-							td m.laiwang.com
-							td /Users/xiaoshan/www
-							td
-								a.btn.btn-sm.btn-info(href='#')
-									span.glyphicon.glyphicon-pencil
-								a.btn.btn-sm.btn-danger(href='#')
-									span.glyphicon.glyphicon-remove
-						tr
-							td m.laiwang.com
-							td /Users/xiaoshan/www
-							td
-								a.btn.btn-sm.btn-info(href='#')
-									span.glyphicon.glyphicon-pencil
-								a.btn.btn-sm.btn-danger(href='#')
-									span.glyphicon.glyphicon-remove
-				button.btn.btn-primary 添加一条记录
-		//- .box
-		//-   h3 读取vhost
-		//-   textarea.form-control(id='J_httpd',rows='10',cols='100')
-		form.form-horizontal(action="/api/vhost/", method='post').box
-			h3 添加vhost
-			.form-group
-				label.control-label.col-md-2 Name
-				.col-md-6
-					input.form-control(type='text', name='name')
-			.form-group
-				label.control-label.col-md-2 Root
-				.col-md-6
-					input.form-control(type='text', name='root')
-			.form-group
-				label.control-label.col-md-2 反向代理
-				.col-md-6
-					.panel.panel-default
-						.panel-heading
-							.row
-								.col-md-2
-									| 路径
-								.col-md-8
-									| 代理地址
-						.panel-body
-							ul.list-group
-								li.list-group-item
-									.row
-										.col-md-2
-											input.form-control(type='text', value='/')
-										.col-md-6
-											input.form-control(type='text', value='http://127.0.0.1:3000/')
-										.col-md-2
-											a.btn.btn-xs.btn-danger(href='#')
-												span.glyphicon.glyphicon-remove
-								li.list-group-item
-									.row
-										.col-md-2
-											input.form-control(type='text', value='/')
-										.col-md-6
-											input.form-control(type='text', value='http://127.0.0.1:3000/')
-										.col-md-2
-											a.btn.btn-xs.btn-danger(href='#')
-												span.glyphicon.glyphicon-remove
-							button.btn.btn-info.btn-xs(type='button') 添加
-			.form-group
-				.col-md-6.col-md-offset-2
-					input.form-control(type='hidden', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')  
-			.form-group
-				.col-md-6.col-md-offset-2
-					input.btn.btn-primary(type='submit')
-			
-		.box
+				.well		
+					button.btn.btn-primary(data-toggle='modal', data-target='#J_modal_add_vhost') 添加一条记录
+		.well
 			button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
-		.box
+		.well
 			h3 host操作
 			textarea.form-control(id='J_host',rows='10',cols='100')
 			br
 			button.btn.btn-info(id='J_read', data-loading-text='读取中') 读取host
 			button.btn.btn-danger(id='J_write') 写入host
-		.box
-			h3 vhost测试
-			button.btn.btn-info(id='J_put') PUT
-			button.btn.btn-danger(id='J_delete') DELETE
+	#J_modal_add_vhost.modal.fade(tabindex='-1', role='dialog')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(data-dismiss='modal') &times;
+					h4.modal-title 添加vhost
+				.modal-body
+					form.form-horizontal(action="/api/vhost/", method='post')
+						.form-group
+							label.control-label.col-md-2 Name
+							.col-md-6
+								input.form-control(type='text', name='name', required)
+						.form-group
+							label.control-label.col-md-2 Root
+							.col-md-6
+								input.form-control(type='text', name='root', required)
+						.form-group
+							label.control-label.col-md-2 反向代理
+							.col-md-10
+								.panel.panel-default
+									.panel-heading
+										.row
+											.col-md-2
+												| 路径
+											.col-md-8
+												| 代理地址
+									.panel-body
+										ul.list-group
+											li.list-group-item
+												.row
+													.col-md-2
+														input.form-control(type='text', name='proxyDir', value='/')
+													.col-md-6
+														input.form-control(type='text', name='proxyPath', value='http://127.0.0.1:3000/')
+													.col-md-2
+														a.btn.btn-xs.btn-danger(href='#')
+															span.glyphicon.glyphicon-remove
+										button.btn.btn-info.btn-xs(type='button') 添加
+				.modal-footer
+					button.btn.btn-default(data-dismiss='modal') close
+					button.btn.btn-primary.J_submit 提交
+
 	script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
 		{{#data}}
 		tr(data-name='{{name}}', data-root='{{root}}', data-proxy='{{_proxy}}', data-input='{{input}}')
@@ -113,97 +76,12 @@ block content
 			td
 				a.btn.btn-sm.btn-info(href='#')
 					span.glyphicon.glyphicon-pencil
-				a.btn.btn-sm.btn-danger(href='#')
+				a.btn.btn-sm.btn-danger.J_delete(href='#')
 					span.glyphicon.glyphicon-remove
 		{{/data}}
 
 block footer-js
 	script(src='/js/mustache.js')
-	script.
-		//- $.getJSONP('/api/vhost/', function(json) {
-		//-     console.log(json)
-		//-   });
-		$.ajax({
-			url: '/api/vhost',
-			type: 'get',
-			dataType: 'jsonp',
-			success: function(json) {
-				console.log(json);
-				var text = JSON.stringify(json);
-				$('#J_httpd').val(text.replace(/(\\r)?\\n/g, '\r\n'));
-				json._proxy = function() {
-					return JSON.stringify(this.proxy);
-				};
-				var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
-				//console.log(html);
-				$('#J_vhost_list').html(html);
-				//- json.data.forEach(function(item) {
-				//- 	console.log(item);
-				//- })
-			}
-		});
-		$('#J_put').on('click', function() {
-			$.ajax({
-				url: '/api/vhost/localhost',
-				type: 'put',
-				dataType: 'jsonp',
-				success: function(json) {
-					console.log(json);
-				}
-			});
-		});
-		$('#J_delete').on('click', function() {
-			$.ajax({
-				url: '/api/vhost/qianshan.com',
-				type: 'delete',
-				dataType: 'jsonp',
-				success: function(json) {
-					console.log(json);
-				}
-			});
-		});
-		//重启apache
-		$('#J_restart').on('click', function() {
-			console.log('重启');
-			var $btn = $(this);
-			$btn.button('loading');
-			$.ajax({
-				url: '/api/apache/restart',
-				type: 'post',
-				dataType: 'jsonp',
-				success: function(json) {
-					console.log(json);
-					$btn.button('reset');
-				}
-			});
-		});
-		//host
-		$('#J_read').on('click', function() {
-			var $btn = $(this);
-			$btn.button('loading');
-			$.ajax({
-				url: '/api/host',
-				type: 'get',
-				dataType: 'jsonp',
-				success: function(json) {
-					console.log(json);
-					$btn.button('reset');
-					$('#J_host').val(json.data);
-				}
-			});
-		});
-		$('#J_write').on('click', function() {
-			$.ajax({
-				url: '/api/host',
-				type: 'post',
-				data: {
-					content: $('#J_host').val()
-				},
-				dataType: 'jsonp',
-				success: function(json) {
-					console.log(json);
-					$('#J_host').val(json.data);
-				}
-			});
-		});
+	script(src='/js/index.js')
+
 

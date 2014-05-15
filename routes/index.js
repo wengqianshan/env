@@ -90,13 +90,14 @@ router.get('/api/vhost/:name', function(req, res) {
 router.post('/api/vhost/', function(req, res) {
     var name = req.body.name;
     var root = req.body.root;
-    var proxy = req.body.proxy;
+    var proxyDir = req.body.proxyDir;
+    var proxyPath = req.body.proxyPath;
     if(!name) {
         console.log('name不能为空');
         return;
     }
     var item = httpd.getItem(name);
-    console.log(item);
+    //console.log(item);
     if(item) {
         return res.jsonp({
             success: false,
@@ -112,10 +113,23 @@ router.post('/api/vhost/', function(req, res) {
         name: name,
         root: root
     };
-
-    if(proxy) {
-        proxy = JSON.parse(proxy);
-        obj.proxy = proxy;
+    //如果有配置代理
+    if(proxyDir && proxyPath) {
+        var proxyArr = [];
+        if(typeof proxyDir === 'string') {
+            proxyArr.push({
+                dir: proxyDir,
+                path: proxyPath
+            });
+        }else if(typeof proxyDir === 'object') {
+            proxyDir.forEach(function(item, i) {
+                proxyArr.push({
+                    dir: item,
+                    path: proxyPath[i]
+                });
+            })
+        }
+        obj.proxy = proxyArr;
     }
     var result = httpd.createVhost(obj);
     var jsonp = {
@@ -152,7 +166,7 @@ router.delete('/api/vhost/:name', function(req, res) {
     var name = req.params.name;
     var result = httpd.removeItem(name);
     var jsonp = {
-        success: !result,
+        success: true,
         data: result
     };
     res.jsonp(jsonp);
