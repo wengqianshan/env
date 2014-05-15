@@ -101,10 +101,10 @@ var Httpd = function() {
         serverName: /ServerName\s+"?(.+)"?/,
         documentRoot: /DocumentRoot\s+("?)(.+)(\1)/,
         proxy: {
-            pass: /ProxyPass +.* +.*\n/ig,
-            request: /ProxyRequests\s+Off\n/ig,
-            proxy: /<Proxy\s+[^>]*?>[\s\S]*?<\/Proxy>\n/ig,
-            reverse: /ProxyPassReverse +.* +.*\n/ig
+            pass: /[^\n]*ProxyPass +.* +.*(?:\n?\r?)/ig,
+            request: /[^\n]*ProxyRequests\s+Off(?:\n?\r?)/ig,
+            proxy: /[^\n]*<Proxy\s+[^>]*?>[\s\S]*?<\/Proxy>(?:\n?\r?)/ig,
+            reverse: /[^\n]*ProxyPassReverse +.* +.*(?:\n?\r?)/ig
         }
     };
 };
@@ -162,6 +162,7 @@ Httpd.prototype = {
         var name = data.match(this.pattern.serverName);
         var root = data.match(this.pattern.documentRoot);
         //var proxy = data.match(this.pattern.proxy.reverse);
+        //console.log(data, data.match(this.pattern.proxy.pass));
         var proxy = {
             pass: data.match(this.pattern.proxy.pass),
             request: data.match(this.pattern.proxy.request),
@@ -171,7 +172,7 @@ Httpd.prototype = {
         if(proxy.pass) {
             proxy.list = [];
             proxy.pass.forEach(function(item) {
-                var list = item.split(/\s+/);
+                var list = item.trim().split(/\s+/);
                 proxy.list.push({
                     dir: list[1],
                     path: list[2]
@@ -276,8 +277,8 @@ Httpd.prototype = {
     createProxy: function(proxy) {
         var strs = ['ProxyRequests Off\n',
             '<Proxy *>\n',
-            'Order deny,allow\n',
-            'Allow from all\n',
+            '    Order deny,allow\n',
+            '    Allow from all\n',
             '</Proxy>\n'
         ];
         proxy.forEach(function(item) {
@@ -291,15 +292,15 @@ Httpd.prototype = {
         var template = [
             '\n##############################\n#' + (option.comment || option.name) + '\n##############################\n',
             '<VirtualHost *:80>\n',
-                'ServerAdmin ' + (option.admin || 'admin@admin.com') + '\n',
-                'DocumentRoot "' + option.root + '"\n',
-                'ServerName ' + option.name + '\n',
-                '<Directory "' + option.root + '">\n',
-                    'Options Indexes FollowSymLinks\n',
-                    'AllowOverride All\n',
-                    'Order allow,deny\n',
-                    'Allow from all\n',
-                '</Directory>\n'
+            '    ServerAdmin ' + (option.admin || 'admin@admin.com') + '\n',
+            '    DocumentRoot "' + option.root + '"\n',
+            '    ServerName ' + option.name + '\n',
+            '    <Directory "' + option.root + '">\n',
+            '        Options Indexes FollowSymLinks\n',
+            '        AllowOverride All\n',
+            '        Order allow,deny\n',
+            '        Allow from all\n',
+            '    </Directory>\n'
         ];
         if(option.proxy) {
             template.push(this.createProxy(option.proxy));

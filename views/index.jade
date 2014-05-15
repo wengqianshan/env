@@ -16,8 +16,8 @@ block content
 							th 域名
 							th 本地路径
 							th 操作
-					tbody
-						tr
+					tbody#J_vhost_list
+						tr(data-name='', data-root='', data-proxy='', data-input='')
 							td ouyo.info
 							td /Users/xiaoshan/www
 							td
@@ -56,8 +56,39 @@ block content
 				.col-md-6
 					input.form-control(type='text', name='root')
 			.form-group
+				label.control-label.col-md-2 反向代理
+				.col-md-6
+					.panel.panel-default
+						.panel-heading
+							.row
+								.col-md-2
+									| 路径
+								.col-md-8
+									| 代理地址
+						.panel-body
+							ul.list-group
+								li.list-group-item
+									.row
+										.col-md-2
+											input.form-control(type='text', value='/')
+										.col-md-6
+											input.form-control(type='text', value='http://127.0.0.1:3000/')
+										.col-md-2
+											a.btn.btn-xs.btn-danger(href='#')
+												span.glyphicon.glyphicon-remove
+								li.list-group-item
+									.row
+										.col-md-2
+											input.form-control(type='text', value='/')
+										.col-md-6
+											input.form-control(type='text', value='http://127.0.0.1:3000/')
+										.col-md-2
+											a.btn.btn-xs.btn-danger(href='#')
+												span.glyphicon.glyphicon-remove
+							button.btn.btn-info.btn-xs(type='button') 添加
+			.form-group
 				.col-md-6.col-md-offset-2
-					input.form-control(type='text', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')  
+					input.form-control(type='hidden', name='proxy', value='[{"path":"/","proxy":"http://127.0.0.1:3000/"},{"path":"/js","proxy":"http://127.0.0.1:3000/js"}]')  
 			.form-group
 				.col-md-6.col-md-offset-2
 					input.btn.btn-primary(type='submit')
@@ -74,8 +105,20 @@ block content
 			h3 vhost测试
 			button.btn.btn-info(id='J_put') PUT
 			button.btn.btn-danger(id='J_delete') DELETE
+	script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
+		{{#data}}
+		tr(data-name='{{name}}', data-root='{{root}}', data-proxy='{{_proxy}}', data-input='{{input}}')
+			td {{name}}
+			td {{root}}
+			td
+				a.btn.btn-sm.btn-info(href='#')
+					span.glyphicon.glyphicon-pencil
+				a.btn.btn-sm.btn-danger(href='#')
+					span.glyphicon.glyphicon-remove
+		{{/data}}
 
 block footer-js
+	script(src='/js/mustache.js')
 	script.
 		//- $.getJSONP('/api/vhost/', function(json) {
 		//-     console.log(json)
@@ -85,9 +128,18 @@ block footer-js
 			type: 'get',
 			dataType: 'jsonp',
 			success: function(json) {
-				//console.log(json);
+				console.log(json);
 				var text = JSON.stringify(json);
 				$('#J_httpd').val(text.replace(/(\\r)?\\n/g, '\r\n'));
+				json._proxy = function() {
+					return JSON.stringify(this.proxy);
+				};
+				var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
+				//console.log(html);
+				$('#J_vhost_list').html(html);
+				//- json.data.forEach(function(item) {
+				//- 	console.log(item);
+				//- })
 			}
 		});
 		$('#J_put').on('click', function() {
