@@ -6,6 +6,15 @@ block content
 			.col-md-12
 				//h3 读取vhost
 				//textarea.form-control(id='J_httpd',rows='10',cols='100') 
+		
+		.well
+			button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
+		.well
+			h3 host操作
+			textarea.form-control(id='J_host',rows='10',cols='100')
+			br
+			button.btn.btn-info(id='J_read', data-loading-text='读取中') 读取host
+			button.btn.btn-danger(id='J_write') 写入host
 		.row
 			.col-md-12
 				table.table.table-striped.table-bordered
@@ -18,14 +27,6 @@ block content
 					tbody#J_vhost_list
 				.well		
 					button.btn.btn-primary(data-toggle='modal', data-target='#J_modal_add_vhost') 添加一条记录
-		.well
-			button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
-		.well
-			h3 host操作
-			textarea.form-control(id='J_host',rows='10',cols='100')
-			br
-			button.btn.btn-info(id='J_read', data-loading-text='读取中') 读取host
-			button.btn.btn-danger(id='J_write') 写入host
 	#J_modal_add_vhost.modal.fade(tabindex='-1', role='dialog')
 		.modal-dialog
 			.modal-content
