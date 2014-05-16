@@ -93,8 +93,8 @@ var Httpd = function() {
         data: null,
         items: []
     };
-    this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
-    //this.path = 'httpd-vhosts.conf';
+    //this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    this.path = 'httpd-vhosts.conf';
     //正则
     this.pattern = {
         vhost: /<VirtualHost\s+[^>]*?>[\s\S]*?<\/VirtualHost>/ig,
@@ -152,6 +152,20 @@ Httpd.prototype = {
             _this.cache.items.push(obj);
         });
         return data;
+    },
+    //读取
+    readFile: function(callback) {
+        var _this = this;
+        fs.readFile(this.path, 'utf8', function(err, data) {
+            callback && callback.call(_this, err, data);
+        });
+    },
+    //写入
+    writeFile: function(data, callback) {
+        var _this = this;
+        fs.writeFile(this.path, data, function(err, data) {
+            callback && callback.call(_this, err, data);
+        });
     },
     //获取列表
     getList: function(data) {

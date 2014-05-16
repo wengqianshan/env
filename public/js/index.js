@@ -35,6 +35,35 @@ $.ajax({
         //- })
     }
 });
+//读取vhost文本
+$('#J_btn_read_vhost').on('click', function() {
+    $.ajax({
+        url: 'api/vhost/text',
+        type: 'get',
+        dataType: 'jsonp',
+        success: function(json) {
+            if(json.success) {
+                $('#J_vhost').val(json.data);
+            }
+        }
+    });
+});
+//写入vhost文本
+$('#J_btn_write_vhost').on('click', function() {
+    $.ajax({
+        url: 'api/vhost/text',
+        type: 'post',
+        data: {
+            content: $('#J_vhost').val()
+        },
+        dataType: 'jsonp',
+        success: function(json) {
+            if(json.success) {
+                alert('写入成功')
+            }
+        }
+    });
+});
 
 //添加
 var $addVhostModal = $('#J_modal_add_vhost');

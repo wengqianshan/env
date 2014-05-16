@@ -65,7 +65,37 @@ router.post('/api/host', function(req, res) {
 
 
 //vhost
-
+router.get('/api/vhost/text', function(req, res) {
+    httpd.readFile(function(err, data) {
+        if(err) {
+            return res.jsonp({
+                success: false,
+                message: '读取失败'
+            });
+        }
+        var jsonp = {
+            success: true,
+            data: data
+        };
+        res.jsonp(jsonp);
+    });
+});
+router.post('/api/vhost/text', function(req, res) {
+    var content = req.body.content;
+    httpd.writeFile(content, function(err) {
+        if(err) {
+            return res.jsonp({
+                success: false,
+                message: '写入失败'
+            });
+        }
+        var jsonp = {
+            success: !err,
+            data: content
+        };
+        res.jsonp(jsonp);
+    });
+});
 //列表
 router.get('/api/vhost', function(req, res) {
     var conf = httpd.getData();
