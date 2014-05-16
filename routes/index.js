@@ -1,3 +1,4 @@
+var os = require('os');
 var express = require('express');
 var router = express.Router();
 var api = require('../api/index');
@@ -31,7 +32,15 @@ router.post('/api/apache/restart', function(req, res) {
     });
 });
 
-
+router.get('/api/ip', function(req, res) {
+    var network = os.networkInterfaces();
+    var en0 = network.en0;
+    var jsonp = {
+        success: true,
+        data: en0
+    };
+    res.jsonp(jsonp);
+});
 //host
 router.get('/api/host', function(req, res) {
     host.read(function(err, data) {
@@ -93,8 +102,10 @@ router.post('/api/vhost/', function(req, res) {
     var proxyDir = req.body.proxyDir;
     var proxyPath = req.body.proxyPath;
     if(!name) {
-        console.log('name不能为空');
-        return;
+        return res.jsonp({
+            success: false,
+            message: 'name不能为空'
+        });
     }
     var item = httpd.getItem(name);
     //console.log(item);
@@ -106,8 +117,10 @@ router.post('/api/vhost/', function(req, res) {
         });
     }
     if(!root) {
-        console.log('root不能为空');
-        return;
+        return res.jsonp({
+            success: false,
+            message: 'root不能为空'
+        });
     }
     var obj = {
         name: name,

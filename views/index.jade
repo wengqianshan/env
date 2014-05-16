@@ -2,10 +2,9 @@ extends layout
 
 block content
 	.container
-		.row
-			.col-md-12
-				//h3 读取vhost
-				//textarea.form-control(id='J_httpd',rows='10',cols='100') 
+		.jumbotron
+			p 当前IP：
+				input#J_ip(readonly, style='border: none; background-color: transparent; outline: none; font-size: 48px;')
 		
 		.well
 			button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
@@ -54,17 +53,8 @@ block content
 											.col-md-8
 												| 代理地址
 									.panel-body
-										ul.list-group
-											li.list-group-item
-												.row
-													.col-md-2
-														input.form-control(type='text', name='proxyDir', value='/')
-													.col-md-6
-														input.form-control(type='text', name='proxyPath', value='http://127.0.0.1:3000/')
-													.col-md-2
-														a.btn.btn-xs.btn-danger(href='#')
-															span.glyphicon.glyphicon-remove
-										button.btn.btn-info.btn-xs(type='button') 添加
+										ul#J_proxy_list.list-group
+										button#J_btn_add_proxy.btn.btn-info.btn-xs(type='button') 添加
 				.modal-footer
 					button.btn.btn-default(data-dismiss='modal') close
 					button.btn.btn-primary.J_submit 提交
@@ -81,6 +71,16 @@ block content
 					span.glyphicon.glyphicon-remove
 		{{/data}}
 
+	script(type='x-tmpl-mustache', id='J_tmpl_proxy_item')
+		li.list-group-item
+			.row
+				.col-md-2
+					input.form-control(type='text', name='proxyDir', value='{{dir}}')
+				.col-md-6
+					input.form-control(type='text', name='proxyPath', value='{{path}}')
+				.col-md-2
+					a.btn.btn-xs.btn-danger.J_delete(href='#')
+						span.glyphicon.glyphicon-remove
 block footer-js
 	script(src='/js/mustache.js')
 	script(src='/js/index.js')

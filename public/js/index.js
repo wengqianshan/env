@@ -1,3 +1,20 @@
+//获取IP
+$.ajax({
+    url: '/api/ip',
+    type: 'get',
+    dataType: 'jsonp',
+    success: function(json) {
+        var data = json.data;
+        data.forEach(function(item, i) {
+            if(item.family === 'IPv4') {
+                $('#J_ip').val(item.address);
+            }
+        })
+    }
+});
+$('#J_ip').on('mouseenter', function() {
+    $(this).select();
+});
 //获取vhost列表
 $.ajax({
     url: '/api/vhost',
@@ -18,6 +35,7 @@ $.ajax({
         //- })
     }
 });
+
 //添加
 var $addVhostModal = $('#J_modal_add_vhost');
 $addVhostModal.find('.J_submit').on('click', function() {
@@ -37,6 +55,16 @@ $addVhostModal.find('.J_submit').on('click', function() {
         }
     })
 });
+$('#J_btn_add_proxy').on('click', function() {
+    var html = Mustache.render($('#J_tmpl_proxy_item').html());
+    $('#J_proxy_list').append(html);
+});
+$('#J_proxy_list').on('click', '.J_delete', function() {
+    var $li = $(this).closest('li');
+    $li.remove();
+});
+
+
 $('#J_put').on('click', function() {
     $.ajax({
         url: '/api/vhost/localhost',
