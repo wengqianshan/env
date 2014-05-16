@@ -93,8 +93,8 @@ var Httpd = function() {
         data: null,
         items: []
     };
-    //this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
-    this.path = 'httpd-vhosts.conf';
+    this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    //this.path = 'httpd-vhosts.conf';
     //正则
     this.pattern = {
         vhost: /<VirtualHost\s+[^>]*?>[\s\S]*?<\/VirtualHost>/ig,

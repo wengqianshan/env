@@ -105,6 +105,9 @@ $('#J_restart').on('click', function() {
     });
 });
 //host
+if(localStorage.getItem('env-host')) {
+    $('#J_host').val(localStorage.getItem('env-host'));
+}
 $('#J_read').on('click', function() {
     var $btn = $(this);
     $btn.button('loading');
@@ -115,7 +118,8 @@ $('#J_read').on('click', function() {
         success: function(json) {
             console.log(json);
             $btn.button('reset');
-            $('#J_host').val(json.data);
+            $('#J_host').val(json.data).css('color', '#080');
+            localStorage.setItem('env-host', json.data);
         }
     });
 });
@@ -129,6 +133,7 @@ $('#J_write').on('click', function() {
         dataType: 'jsonp',
         success: function(json) {
             console.log(json);
+            localStorage.setItem('env-host', $('#J_host').val());
             $('#J_host').val(json.data);
         }
     });

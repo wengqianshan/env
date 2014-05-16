@@ -12,8 +12,8 @@ block content
 			h3 host操作
 			textarea.form-control(id='J_host',rows='10',cols='100')
 			br
-			button.btn.btn-info(id='J_read', data-loading-text='读取中') 读取host
-			button.btn.btn-danger(id='J_write') 写入host
+			button.btn.btn-default(id='J_read', data-loading-text='读取中') 读取host
+			button.btn.btn-primary(id='J_write') 写入host
 		.row
 			.col-md-12
 				table.table.table-striped.table-bordered
@@ -60,7 +60,7 @@ block content
 					button.btn.btn-primary.J_submit 提交
 
 	script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
-		{{#data}}
+		| {{#data}}
 		tr(data-name='{{name}}', data-root='{{root}}', data-proxy='{{_proxy}}', data-input='{{input}}')
 			td {{name}}
 			td {{root}}
@@ -69,7 +69,7 @@ block content
 					span.glyphicon.glyphicon-pencil
 				a.btn.btn-sm.btn-danger.J_delete(href='#')
 					span.glyphicon.glyphicon-remove
-		{{/data}}
+		| {{/data}}
 
 	script(type='x-tmpl-mustache', id='J_tmpl_proxy_item')
 		li.list-group-item
