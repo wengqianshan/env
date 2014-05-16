@@ -15,13 +15,14 @@ $.ajax({
 $('#J_ip').on('mouseenter', function() {
     $(this).select();
 });
+
 //获取vhost列表
 $.ajax({
     url: '/api/vhost',
     type: 'get',
     dataType: 'jsonp',
     success: function(json) {
-        console.log(json);
+        //console.log(json);
         var text = JSON.stringify(json);
         //$('#J_httpd').val(text.replace(/(\\r)?\\n/g, '\r\n'));
         json._proxy = function() {

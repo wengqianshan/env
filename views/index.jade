@@ -64,7 +64,20 @@ block content
                 .modal-footer
                     button.btn.btn-default(data-dismiss='modal') close
                     button.btn.btn-primary.J_submit 提交
-
+    //弹窗模板
+    script(type='x-tmpl-mustache', id='J_modal_dialog')
+        .modal.fade
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                        h4.modal-title {{title}}
+                    .modal-body
+                        p {{body}}
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') {{close}}
+                        button.btn.btn-primary(type='button') {{ok}}
+    //vhost条目模板
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
         | {{#data}}
         tr(data-name='{{name}}', data-root='{{root}}', data-proxy='{{_proxy}}', data-input='{{input}}')
@@ -76,7 +89,7 @@ block content
                 a.btn.btn-sm.btn-danger.J_delete(href='#')
                     span.glyphicon.glyphicon-remove
         | {{/data}}
-
+    //proxy模板
     script(type='x-tmpl-mustache', id='J_tmpl_proxy_item')
         li.list-group-item
             .row
