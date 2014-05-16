@@ -96,6 +96,14 @@ router.post('/api/vhost/text', function(req, res) {
         res.jsonp(jsonp);
     });
 });
+
+router.get('/api/vhost/permiss', function(req, res) {
+    httpd.checkPermission(2, function(error, status) {
+        res.jsonp({
+            success: status
+        });
+    });
+})
 //列表
 router.get('/api/vhost', function(req, res) {
     var conf = httpd.getData();

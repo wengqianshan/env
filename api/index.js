@@ -93,8 +93,8 @@ var Httpd = function() {
         data: null,
         items: []
     };
-    //this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
-    this.path = 'httpd-vhosts.conf';
+    this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    //this.path = 'httpd-vhosts.conf';
     //正则
     this.pattern = {
         vhost: /<VirtualHost\s+[^>]*?>[\s\S]*?<\/VirtualHost>/ig,
@@ -125,6 +125,24 @@ Httpd.prototype = {
         });
         console.log(conf);*/
         //fs.writeFile('c.txt', conf);
+    },
+    //检查权限
+    checkPermission: function(mask, callback) {
+        /*canExecute():
+        checkPermission (<path>, 1, cb);
+
+        canRead():
+        checkPermission (<path>, 4, cb);
+
+        canWrite():
+        checkPermission (<path>, 2, cb);*/
+        fs.stat(this.path, function(err, stats) {
+            if(err) {
+                callback && callback.call(null, err, false);
+            }else {
+                callback && callback.call(null, null, !!(mask & parseInt ((stats.mode & parseInt ("777", 8)).toString (8)[0])));
+            }
+        })
     },
     //获取配置文件
     getData: function() {
