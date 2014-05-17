@@ -22,18 +22,11 @@ $.ajax({
     type: 'get',
     dataType: 'jsonp',
     success: function(json) {
-        //console.log(json);
-        var text = JSON.stringify(json);
-        //$('#J_httpd').val(text.replace(/(\\r)?\\n/g, '\r\n'));
         json._proxy = function() {
             return JSON.stringify(this.proxy);
         };
         var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
-        //console.log(html);
         $('#J_vhost_list').html(html);
-        //- json.data.forEach(function(item) {
-        //-     console.log(item);
-        //- })
     }
 });
 //读取vhost文本
@@ -67,37 +60,10 @@ $('#J_btn_write_vhost').on('click', function() {
 });
 
 //添加
-/*var $addVhostModal = $('#J_modal_add_vhost');
-$addVhostModal.find('.J_submit').on('click', function() {
-    var param = $addVhostModal.find('form').serialize();
-    console.log(param);
-    $.ajax({
-        url: 'api/vhost/',
-        type: 'post',
-        data: param,
-        dataType: 'jsonp',
-        success: function(json) {
-            console.log(json);
-            if(json.success) {
-                $addVhostModal.modal('hide');
-            }
-        }
-    })
-});
-$('#J_btn_add_proxy').on('click', function() {
-    var html = Mustache.render($('#J_tmpl_proxy_item').html());
-    $('#J_proxy_list').append(html);
-});
-$('#J_proxy_list').on('click', '.J_delete', function() {
-    var $li = $(this).closest('li');
-    $li.remove();
-});*/
-
 $('#J_vhost_add').on('click', function() {
     var dialogTmpl = $('#J_tmpl_modal_dialog').html();
     var dialog = Mustache.render(dialogTmpl, {
-        title: '更新',
-        //body: '',
+        title: '添加vhost',
         close: '关闭',
         ok: '提交'
     }, {
@@ -123,7 +89,6 @@ $('#J_vhost_add').on('click', function() {
             data: param,
             dataType: 'jsonp',
             success: function(json) {
-                //console.log(json);
                 if(json.success) {
                     $dialog.modal('hide');
                     console.log('添加成功');
@@ -132,8 +97,6 @@ $('#J_vhost_add').on('click', function() {
         })
     });
 });
-
-
 
 //编辑
 $('#J_vhost_list').on('click', '.J_edit', function(e) {
@@ -145,7 +108,6 @@ $('#J_vhost_list').on('click', '.J_edit', function(e) {
     var dialogTmpl = $('#J_tmpl_modal_dialog').html();
     var dialog = Mustache.render(dialogTmpl, {
         title: '更新',
-        //body: '',
         close: '关闭',
         ok: '提交'
     }, {
@@ -197,6 +159,9 @@ $('#J_vhost_list').on('click', '.J_delete', function(e) {
         dataType: 'jsonp',
         success: function(json) {
             console.log(json);
+            if(json.success) {
+                alert('删除成功');
+            }
         }
     });
 });
