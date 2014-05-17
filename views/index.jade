@@ -64,19 +64,6 @@ block content
                 .modal-footer
                     button.btn.btn-default(data-dismiss='modal') close
                     button.btn.btn-primary.J_submit 提交
-    //弹窗模板
-    script(type='x-tmpl-mustache', id='J_modal_dialog')
-        .modal.fade
-            .modal-dialog
-                .modal-content
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-                        h4.modal-title {{title}}
-                    .modal-body
-                        p {{body}}
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') {{close}}
-                        button.btn.btn-primary(type='button') {{ok}}
     //vhost条目模板
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
         | {{#data}}
@@ -84,11 +71,53 @@ block content
             td {{name}}
             td {{root}}
             td
-                a.btn.btn-sm.btn-info(href='#')
-                    span.glyphicon.glyphicon-pencil
-                a.btn.btn-sm.btn-danger.J_delete(href='#')
-                    span.glyphicon.glyphicon-remove
+                .action
+                    a.btn.btn-sm.btn-info.J_edit(href='#')
+                        span.glyphicon.glyphicon-pencil
+                    a.btn.btn-sm.btn-danger.J_delete(href='#')
+                        span.glyphicon.glyphicon-remove
         | {{/data}}
+    //弹窗模板
+    script(type='x-tmpl-mustache', id='J_tmpl_modal_dialog')
+        .modal.fade
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                        h4.modal-title {{title}}
+                    .modal-body
+                        | {{> body}}
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') {{close}}
+                        button.btn.btn-primary.J_submit(type='button') {{ok}}
+    //vhost表单模板
+    script(type='x-tmpl-mustache', id='J_tmpl_vhost_form')
+        form.form-horizontal(action="/api/vhost/", method='post')
+            .form-group
+                label.control-label.col-md-2 Name
+                .col-md-6
+                    input.form-control(type='text', name='name', required, value='{{name}}')
+            .form-group
+                label.control-label.col-md-2 Root
+                .col-md-6
+                    input.form-control(type='text', name='root', required, value='{{root}}')
+            .form-group
+                label.control-label.col-md-2 反向代理
+                .col-md-10
+                    .panel.panel-default
+                        .panel-heading
+                            .row
+                                .col-md-2
+                                    | 路径
+                                .col-md-8
+                                    | 代理地址
+                        .panel-body
+                            ul.list-group.J_proxy_list
+                                | {{#proxys}}
+                                | {{> body}}
+                                | {{/proxys}}
+                            button.btn.btn-info.btn-xs.J_add(type='button') 添加
+    
     //proxy模板
     script(type='x-tmpl-mustache', id='J_tmpl_proxy_item')
         li.list-group-item

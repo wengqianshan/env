@@ -35,6 +35,13 @@ router.post('/api/apache/restart', function(req, res) {
 router.get('/api/ip', function(req, res) {
     var network = os.networkInterfaces();
     var en0 = network.en0;
+    if(!en0) {
+        var arr = [];
+        for(var i in network) {
+            arr.push(network[i]);
+        }
+        en0 = arr[0];
+    }
     var jsonp = {
         success: true,
         data: en0
@@ -192,24 +199,43 @@ router.post('/api/vhost/', function(req, res) {
 
 //更新
 router.put('/api/vhost/:name', function(req, res) {
-    var name = req.params.name;
-    var conf = httpd.updateItem(name, {
-        name: 'laiwang.com',
-        root: '/etc/host/',
-        proxy: [{
-            path: '/',
-            proxy: 'http://127.0.0.1:3000/'
-        }, {
-            path: '/js',
-            proxy: 'http://127.0.0.1:3000/js'
-        }]
+    var oldName = req.params.name;
+    var name = req.body.name;
+    var root = req.body.root;
+    var proxyDir = req.body.proxyDir;
+    var proxyPath = req.body.proxyPath;
+    var proxy = null;
+    //如果有配置代理
+    if(proxyDir && proxyPath) {
+        var proxyArr = [];
+        if(typeof proxyDir === 'string') {
+            proxyArr.push({
+                dir: proxyDir,
+                path: proxyPath
+            });
+        }else if(typeof proxyDir === 'object') {
+            proxyDir.forEach(function(item, i) {
+                proxyArr.push({
+                    dir: item,
+                    path: proxyPath[i]
+                });
+            })
+        }
+        proxy = proxyArr;
+    }
+    var conf = httpd.updateItem(oldName, {
+        name: name,
+        root: root,
+        proxy: proxy || ''
     });
-    //TODO:写入文件
-    var jsonp = {
-        success: true,
-        data: conf
-    };
-    res.jsonp(jsonp);
+    //console.log(proxy || '');
+    httpd.writeFile(conf, function(err, data) {
+        var jsonp = {
+            success: !err,
+            data: conf
+        };
+        res.jsonp(jsonp);
+    });
 });
 
 //删除

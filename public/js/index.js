@@ -80,7 +80,6 @@ $addVhostModal.find('.J_submit').on('click', function() {
             console.log(json);
             if(json.success) {
                 $addVhostModal.modal('hide');
-
             }
         }
     })
@@ -95,14 +94,56 @@ $('#J_proxy_list').on('click', '.J_delete', function() {
 });
 
 
-$('#J_put').on('click', function() {
-    $.ajax({
-        url: '/api/vhost/localhost',
-        type: 'put',
-        dataType: 'jsonp',
-        success: function(json) {
-            console.log(json);
-        }
+
+//编辑
+$('#J_vhost_list').on('click', '.J_edit', function(e) {
+    e.preventDefault();
+    var $tr = $(this).closest('tr');
+    var name = $tr.attr('data-name');
+    var root = $tr.attr('data-root');
+    var proxy = JSON.parse($tr.attr('data-proxy'));
+    var dialogTmpl = $('#J_tmpl_modal_dialog').html();
+    var dialog = Mustache.render(dialogTmpl, {
+        title: '更新',
+        //body: '',
+        close: '关闭',
+        ok: '提交'
+    }, {
+        body: Mustache.render($('#J_tmpl_vhost_form').html(), {
+            name: name,
+            root: root,
+            proxys: proxy.list
+        }, {
+            body: $('#J_tmpl_proxy_item').html()
+        })
+    });
+    var $dialog = $(dialog);
+    $dialog.modal();
+    $dialog.on('click', '.J_delete', function(e) {
+        e.preventDefault();
+        var $li = $(this).closest('li');
+        $li.remove();
+    });
+    $dialog.on('click', '.J_add', function(e) {
+        var html = Mustache.render($('#J_tmpl_proxy_item').html());
+        $dialog.find('.J_proxy_list').append(html);
+    });
+    $dialog.on('click', '.J_submit', function() {
+        var $form = $dialog.find('form');
+        var param = $form.serialize();
+        $.ajax({
+            url: 'api/vhost/' + name,
+            type: 'put',
+            data: param,
+            dataType: 'jsonp',
+            success: function(json) {
+                console.log(json);
+                if(json.success) {
+                    $dialog.modal('hide');
+                    console.log('更新成功')
+                }
+            }
+        })
     });
 });
 //删除
