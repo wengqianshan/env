@@ -62,11 +62,11 @@ block content
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_form')
         form.form-horizontal(action="/api/vhost/", method='post')
             .form-group
-                label.control-label.col-md-2 Name
+                label.control-label.col-md-2 域名
                 .col-md-6
                     input.form-control(type='text', name='name', required, value='{{name}}')
             .form-group
-                label.control-label.col-md-2 Root
+                label.control-label.col-md-2 本地路径
                 .col-md-6
                     input.form-control(type='text', name='root', required, value='{{root}}')
             .form-group
