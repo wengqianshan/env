@@ -1,15 +1,10 @@
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+td .action .btn{
+    margin-right: 5px;
 }
-
-a {
-  color: #00B7FF;
+.list-group-item .btn{
+    position: relative;
+    top: 6px;
 }
-label{
-    display: block;
-}
-.box{
-    padding: 20px;
-    border: 1px solid #eee;
-    margin: 10px 0;
+.ip{
+    margin-top: 15px;
 }

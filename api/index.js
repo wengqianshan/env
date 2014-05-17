@@ -85,7 +85,7 @@ Host.prototype = {
             callback && callback.call(_this, err);
         });
     }
-}
+};
 
 //虚拟主机
 var Httpd = function() {

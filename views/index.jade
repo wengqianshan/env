@@ -2,7 +2,7 @@ extends layout
 
 block content
     .container
-        .jumbotron
+        .jumbotron.ip
             p 当前IP：
                 input#J_ip(readonly, style='border: none; background-color: transparent; outline: none; font-size: 48px;')
         
@@ -25,45 +25,13 @@ block content
                             th 操作
                     tbody#J_vhost_list
                 .well       
-                    button.btn.btn-primary(data-toggle='modal', data-target='#J_modal_add_vhost') 添加一条记录
+                    button.btn.btn-primary#J_vhost_add 添加一条记录
         .well
             h3 vhost源码
             textarea.form-control(id='J_vhost',rows='10',cols='100')
             br
             button.btn.btn-default(id='J_btn_read_vhost', data-loading-text='读取中') 读取vhost
             button.btn.btn-primary(id='J_btn_write_vhost') 写入vhost
-    #J_modal_add_vhost.modal.fade(tabindex='-1', role='dialog')
-        .modal-dialog
-            .modal-content
-                .modal-header
-                    button.close(data-dismiss='modal') &times;
-                    h4.modal-title 添加vhost
-                .modal-body
-                    form.form-horizontal(action="/api/vhost/", method='post')
-                        .form-group
-                            label.control-label.col-md-2 Name
-                            .col-md-6
-                                input.form-control(type='text', name='name', required)
-                        .form-group
-                            label.control-label.col-md-2 Root
-                            .col-md-6
-                                input.form-control(type='text', name='root', required)
-                        .form-group
-                            label.control-label.col-md-2 反向代理
-                            .col-md-10
-                                .panel.panel-default
-                                    .panel-heading
-                                        .row
-                                            .col-md-2
-                                                | 路径
-                                            .col-md-8
-                                                | 代理地址
-                                    .panel-body
-                                        ul#J_proxy_list.list-group
-                                        button#J_btn_add_proxy.btn.btn-info.btn-xs(type='button') 添加
-                .modal-footer
-                    button.btn.btn-default(data-dismiss='modal') close
-                    button.btn.btn-primary.J_submit 提交
     //vhost条目模板
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
         | {{#data}}
@@ -79,7 +47,7 @@ block content
         | {{/data}}
     //弹窗模板
     script(type='x-tmpl-mustache', id='J_tmpl_modal_dialog')
-        .modal.fade
+        .modal.fade(tabindex='-1', role='dialog')
             .modal-dialog
                 .modal-content
                     .modal-header

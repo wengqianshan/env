@@ -67,7 +67,7 @@ $('#J_btn_write_vhost').on('click', function() {
 });
 
 //添加
-var $addVhostModal = $('#J_modal_add_vhost');
+/*var $addVhostModal = $('#J_modal_add_vhost');
 $addVhostModal.find('.J_submit').on('click', function() {
     var param = $addVhostModal.find('form').serialize();
     console.log(param);
@@ -91,6 +91,46 @@ $('#J_btn_add_proxy').on('click', function() {
 $('#J_proxy_list').on('click', '.J_delete', function() {
     var $li = $(this).closest('li');
     $li.remove();
+});*/
+
+$('#J_vhost_add').on('click', function() {
+    var dialogTmpl = $('#J_tmpl_modal_dialog').html();
+    var dialog = Mustache.render(dialogTmpl, {
+        title: '更新',
+        //body: '',
+        close: '关闭',
+        ok: '提交'
+    }, {
+        body: Mustache.render($('#J_tmpl_vhost_form').html())
+    });
+    var $dialog = $(dialog);
+    $dialog.modal();
+    $dialog.on('click', '.J_delete', function(e) {
+        e.preventDefault();
+        var $li = $(this).closest('li');
+        $li.remove();
+    });
+    $dialog.on('click', '.J_add', function(e) {
+        var html = Mustache.render($('#J_tmpl_proxy_item').html());
+        $dialog.find('.J_proxy_list').append(html);
+    });
+    $dialog.on('click', '.J_submit', function() {
+        var $form = $dialog.find('form');
+        var param = $form.serialize();
+        $.ajax({
+            url: 'api/vhost/',
+            type: 'post',
+            data: param,
+            dataType: 'jsonp',
+            success: function(json) {
+                //console.log(json);
+                if(json.success) {
+                    $dialog.modal('hide');
+                    console.log('添加成功');
+                }
+            }
+        })
+    });
 });
 
 
