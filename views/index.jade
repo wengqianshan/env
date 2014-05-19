@@ -54,9 +54,11 @@ block content
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
                         h4.modal-title {{title}}
                     .modal-body
-                        | {{> body}}
+                        | {{&body}}
                     .modal-footer
+                        {{#close}}
                         button.btn.btn-default(type='button', data-dismiss='modal') {{close}}
+                        {{/close}}
                         button.btn.btn-primary.J_submit(type='button') {{ok}}
     //vhost表单模板
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_form')
