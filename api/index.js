@@ -6,7 +6,24 @@ var platform = os.platform();
 var Platform = {
     interfaces: os.networkInterfaces(),
     isMac: platform === 'darwin',
-    isWin: platform === 'win32'
+    isWin: platform === 'win32',
+    checkPermission: function(path, mask, callback) {
+        /*canExecute():
+        checkPermission (<path>, 1, cb);
+
+        canRead():
+        checkPermission (<path>, 4, cb);
+
+        canWrite():
+        checkPermission (<path>, 2, cb);*/
+        fs.stat(path, function(err, stats) {
+            if(err) {
+                callback && callback.call(null, err, false);
+            }else {
+                callback && callback.call(null, null, !!(mask & parseInt ((stats.mode & parseInt ("777", 8)).toString (8)[0])));
+            }
+        })
+    }
 };
 //console.log(Platform)
 
@@ -73,6 +90,10 @@ var Host = function() {
     this.path = Platform.isWin ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts';
 };
 Host.prototype = {
+    //检查权限
+    checkPermission: function(mask, callback) {
+        Platform.checkPermission(this.path, mask, callback);
+    },
     read: function(callback) {
         var _this = this;
         fs.readFile(this.path, 'utf8', function(err, data) {
@@ -128,21 +149,7 @@ Httpd.prototype = {
     },
     //检查权限
     checkPermission: function(mask, callback) {
-        /*canExecute():
-        checkPermission (<path>, 1, cb);
-
-        canRead():
-        checkPermission (<path>, 4, cb);
-
-        canWrite():
-        checkPermission (<path>, 2, cb);*/
-        fs.stat(this.path, function(err, stats) {
-            if(err) {
-                callback && callback.call(null, err, false);
-            }else {
-                callback && callback.call(null, null, !!(mask & parseInt ((stats.mode & parseInt ("777", 8)).toString (8)[0])));
-            }
-        })
+        Platform.checkPermission(this.path, mask, callback);
     },
     //获取配置文件
     getData: function() {

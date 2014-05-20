@@ -49,6 +49,13 @@ router.get('/api/ip', function(req, res) {
     res.jsonp(jsonp);
 });
 //host
+router.get('/api/host/permiss', function(req, res) {
+    host.checkPermission(2, function(error, status) {
+        res.jsonp({
+            success: status
+        });
+    });
+});
 router.get('/api/host', function(req, res) {
     host.read(function(err, data) {
         var jsonp = {
@@ -68,7 +75,7 @@ router.post('/api/host', function(req, res) {
         };
         res.jsonp(jsonp);
     })
-})
+});
 
 
 //vhost
