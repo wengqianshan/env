@@ -215,6 +215,18 @@ $('#J_restart').on('click', function() {
     });
 });
 //host
+
+/*$.ajax({
+    url: '/api/host/permiss',
+    type: 'get',
+    dataType: 'jsonp',
+    success: function(json) {
+        if(!json.success) {
+            Dialog.alert('您没有写入host的权限，请用sudo执行命令行！');
+        }
+    }
+});*/
+
 if(localStorage.getItem('env-host')) {
     $('#J_host').val(localStorage.getItem('env-host'));
 }
@@ -243,9 +255,14 @@ $('#J_write').on('click', function() {
         dataType: 'jsonp',
         success: function(json) {
             console.log(json);
-            localStorage.setItem('env-host', $('#J_host').val());
-            $('#J_host').val(json.data);
-            Dialog.alert('写入成功');
+            if(json.success) {
+                localStorage.setItem('env-host', $('#J_host').val());
+                //$('#J_host').val(json.data);
+                Dialog.alert('写入成功');
+            }else {
+                Dialog.alert('写入失败');
+            }
+            
         }
     });
 });

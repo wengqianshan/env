@@ -77,12 +77,14 @@ block content
                     .panel.panel-default
                         .panel-heading
                             .row
-                                .col-md-2
+                                .col-md-4
                                     | 路径
-                                .col-md-8
+                                .col-md-6
                                     | 代理地址
+                                .col-md-2
+                                    | 操作
                         .panel-body
-                            ul.list-group.J_proxy_list
+                            ul.list-group.proxy-list.J_proxy_list
                                 | {{#proxys}}
                                 | {{> body}}
                                 | {{/proxys}}
@@ -92,7 +94,7 @@ block content
     script(type='x-tmpl-mustache', id='J_tmpl_proxy_item')
         li.list-group-item
             .row
-                .col-md-2
+                .col-md-4
                     input.form-control(type='text', name='proxyDir', value='{{dir}}')
                 .col-md-6
                     input.form-control(type='text', name='proxyPath', value='{{path}}')
