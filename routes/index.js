@@ -197,9 +197,12 @@ router.post('/api/vhost/', function(req, res) {
         obj.proxy = proxyArr;
     }
     var result = httpd.createVhost(obj);
+    if(result) {
+        obj.input = result;
+    }
     var jsonp = {
-        success: !result,
-        data: result
+        success: true,
+        data: obj
     };
     res.jsonp(jsonp);
 });
@@ -230,16 +233,16 @@ router.put('/api/vhost/:name', function(req, res) {
         }
         proxy = proxyArr;
     }
-    var conf = httpd.updateItem(oldName, {
+    var obj = {
         name: name,
         root: root,
         proxy: proxy || ''
-    });
-    //console.log(proxy || '');
-    httpd.writeFile(conf, function(err, data) {
+    };
+    httpd.updateItem(oldName, obj, function(err, data) {
+        obj.input = data;
         var jsonp = {
             success: !err,
-            data: conf
+            data: obj
         };
         res.jsonp(jsonp);
     });

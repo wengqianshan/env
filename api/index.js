@@ -257,7 +257,7 @@ Httpd.prototype = {
         return conf;
     },
     //更新一个虚拟主机
-    updateItem: function(name, options) {
+    updateItem: function(name, options, callback) {
         var obj = this.getItem(name);
         if (!obj) {
             console.log('虚拟主机' + name + '不存在');
@@ -280,10 +280,9 @@ Httpd.prototype = {
         //console.log(obj.input, data);
         var conf = this.cache.data.replace(obj.input, data);
         //console.log(conf);
-        return conf;
-        /*fs.writeFile('a.txt', conf, function(error, data) {
-            console.log(error, data);
-        });*/
+        this.writeFile(conf, function(error) {
+            callback && callback.call(null, error, data);
+        });
     },
     //删除反向代理
     removeProxy: function(data) {
@@ -346,11 +345,12 @@ Httpd.prototype = {
             template.push(this.createProxy(option.proxy));
         }
         template.push('</VirtualHost>');
-        var result = fs.writeFileSync(this.path, template.join(''), {
+        var data = template.join('');
+        fs.writeFileSync(this.path, data, {
             flag: 'a'
         });
         this.readFileSync();
-        return result;
+        return data;
     }
 };
 
