@@ -84,11 +84,41 @@ block content
                                 .col-md-2
                                     | 操作
                         .panel-body
-                            ul.list-group.proxy-list.J_proxy_list
+                            ul.list-group.list-no-border.J_proxy_list
                                 | {{#proxys}}
                                 | {{> body}}
                                 | {{/proxys}}
                             button.btn.btn-info.btn-xs.J_add(type='button') 添加
+            //- .form-group
+            //-     label.control-label.col-md-2 AliasMatch
+            //-     .col-md-10
+            //-         .panel.panel-default
+            //-             .panel-heading
+            //-                 .row
+            //-                     .col-md-4
+            //-                         | 规则
+            //-                     .col-md-6
+            //-                         | 本地路径
+            //-                     .col-md-2
+            //-                         | 操作
+            //-             .panel-body
+            //-                 ul.list-group.list-no-border.J_alias_list
+            //-                 button.btn.btn-info.btn-xs(type='button') 添加
+            //- .form-group
+            //-     label.control-label.col-md-2 RedirectMatch
+            //-     .col-md-10
+            //-         .panel.panel-default
+            //-             .panel-heading
+            //-                 .row
+            //-                     .col-md-4
+            //-                         | 规则
+            //-                     .col-md-6
+            //-                         | 远程路径
+            //-                     .col-md-2
+            //-                         | 操作
+            //-             .panel-body
+            //-                 ul.list-group.list-no-border.J_redirect_list
+            //-                 button.btn.btn-info.btn-xs(type='button') 添加
     
     //proxy模板
     script(type='x-tmpl-mustache', id='J_tmpl_proxy_item')

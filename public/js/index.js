@@ -51,6 +51,9 @@ $.ajax({
         $('#J_vhost_list').html(html);
     }
 });
+if(localStorage.getItem('env-vhost')) {
+    $('#J_vhost').val(localStorage.getItem('env-vhost'));
+}
 //读取vhost文本
 $('#J_btn_read_vhost').on('click', function() {
     $.ajax({
@@ -60,23 +63,26 @@ $('#J_btn_read_vhost').on('click', function() {
         success: function(json) {
             if(json.success) {
                 $('#J_vhost').val(json.data);
+                localStorage.setItem('env-vhost', json.data);
             }
         }
     });
 });
 //写入vhost文本
 $('#J_btn_write_vhost').on('click', function() {
+    var data = $('#J_vhost').val()
     $.ajax({
         url: 'api/vhost/text',
         type: 'post',
         data: {
-            content: $('#J_vhost').val()
+            content: data
         },
         dataType: 'jsonp',
         success: function(json) {
             if(json.success) {
                 //alert('写入成功')
-                Dialog.alert('写入成功')
+                Dialog.alert('写入成功');
+                localStorage.setItem('env-vhost', data);
             }
         }
     });
@@ -194,6 +200,7 @@ $('#J_vhost_list').on('click', '.J_delete', function(e) {
             //console.log(json);
             if(json.success) {
                 Dialog.alert('删除成功');
+                $tr.remove();
             }
         }
     });

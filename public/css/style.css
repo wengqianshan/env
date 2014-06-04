@@ -8,10 +8,10 @@ td .action .btn{
 .ip{
     margin-top: 15px;
 }
-.proxy-list{
+.list-no-border{
 
 }
-.proxy-list .list-group-item{
+.list-no-border .list-group-item{
     border: none;
     padding-left: 0;
     padding-right: 0;
