@@ -197,12 +197,9 @@ router.post('/api/vhost/', function(req, res) {
         obj.proxy = proxyArr;
     }
     var result = httpd.createVhost(obj);
-    if(result) {
-        obj.input = result;
-    }
     var jsonp = {
         success: true,
-        data: obj
+        data: httpd.getObj(result)
     };
     res.jsonp(jsonp);
 });
@@ -239,10 +236,9 @@ router.put('/api/vhost/:name', function(req, res) {
         proxy: proxy || ''
     };
     httpd.updateItem(oldName, obj, function(err, data) {
-        obj.input = data;
         var jsonp = {
             success: !err,
-            data: obj
+            data: httpd.getObj(data)
         };
         res.jsonp(jsonp);
     });

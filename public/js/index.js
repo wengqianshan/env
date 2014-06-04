@@ -123,6 +123,11 @@ $('#J_vhost_add').on('click', function() {
                     $dialog.modal('hide');
                     //console.log('添加成功');
                     Dialog.alert('添加成功');
+                    json._proxy = function() {
+                        return JSON.stringify(this.proxy);
+                    };
+                    var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
+                    $('#J_vhost_list').append(html);
                 }
             }
         })
@@ -182,6 +187,12 @@ $('#J_vhost_list').on('click', '.J_edit', function(e) {
                     $dialog.modal('hide');
                     //console.log('更新成功')
                     Dialog.alert('更新成功');
+                    json._proxy = function() {
+                        return JSON.stringify(this.proxy);
+                    };
+                    var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
+                    //$('#J_vhost_list').append(html);
+                    $tr.replaceWith(html);
                 }
             }
         })
