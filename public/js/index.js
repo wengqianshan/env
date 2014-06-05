@@ -101,14 +101,19 @@ $('#J_vhost_add').on('click', function() {
     }*/);
     var $dialog = $(dialog);
     $dialog.modal();
+    setTimeout(function() {
+        $dialog.find('.form-control').eq(0).focus();
+    }, 500);
+    
     $dialog.on('click', '.J_delete', function(e) {
         e.preventDefault();
         var $li = $(this).closest('li');
         $li.remove();
     });
     $dialog.on('click', '.J_add', function(e) {
-        var html = Mustache.render($('#J_tmpl_proxy_item').html());
-        $dialog.find('.J_proxy_list').append(html);
+        var $html = $(Mustache.render($('#J_tmpl_proxy_item').html()));
+        $dialog.find('.J_proxy_list').append($html);
+        $html.find('.form-control').eq(0).focus();
     });
     $dialog.on('click', '.J_submit', function() {
         var $form = $dialog.find('form');
@@ -128,6 +133,8 @@ $('#J_vhost_add').on('click', function() {
                     };
                     var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
                     $('#J_vhost_list').append(html);
+                }else{
+                    Dialog.alert(json.message);
                 }
             }
         })
