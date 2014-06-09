@@ -62,7 +62,7 @@ $('#J_btn_read_vhost').on('click', function() {
         dataType: 'jsonp',
         success: function(json) {
             if(json.success) {
-                $('#J_vhost').val(json.data);
+                $('#J_vhost').val(json.data).css('color', '#080');;
                 localStorage.setItem('env-vhost', json.data);
             }
         }
