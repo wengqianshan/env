@@ -1,0 +1,17 @@
+{
+  "name": "application-name",
+  "main": "index.html",
+  "window": {
+    "toolbar": false,
+    "frame": false,
+    "width": 1024,
+    "height": 600,
+    "min_width": 320,
+    "min_height": 480,
+    "max_width": 1024,
+    "max_height": 600
+  },
+  "dependencies": {
+    "qs": "^0.6.6"
+  }
+}

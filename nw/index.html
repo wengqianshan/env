@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>本地环境工具</title>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+    <!--link(rel='stylesheet', href='/bootstrap/css/bootstrap-theme.min.css')-->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="topbar">
+        本地环境配置工具
+    </div>
+    <div class="container">
+        <aside class="sidebar">
+            <ul class="" id="J_side_tab">
+                <li class="active">
+
+                    <a href="#J_tab_home" role="tab" data-toggle="tab">
+                        <span class="glyphicon glyphicon-home"></span>
+                        控制台
+                    </a>
+                </li>
+                <li>
+                    <a href="#J_tab_host" role="tab" data-toggle="tab">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                        Host
+                    </a>
+                </li>
+                <li>
+                    <a href="#J_tab_vhost" role="tab" data-toggle="tab">
+                        <span class="glyphicon glyphicon-send"></span>
+                        虚拟主机
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        <section class="main">
+            <div class="tab-content">
+                <div class="tab-pane active" id="J_tab_home">
+                    <div class="ip">
+                        <p>当前IP：
+                            <input id="J_ip" readonly style="border: none; background-color: transparent; outline: none; font-size: 48px;">
+                        </p>
+                    </div>
+                    <div class="">
+                        <button id="J_restart" data-loading-text="重启中..." class="btn btn-primary">重启Apache</button>
+                    </div>
+                </div>
+                <div class="tab-pane" id="J_tab_host">
+                    <div class="">
+                        <h3>host操作</h3>
+                        <textarea id="J_host" rows="10" cols="100" class="form-control"></textarea>
+                        <br>
+                        <button id="J_read" data-loading-text="读取中" class="btn btn-default">读取host</button>
+                        <button id="J_write" class="btn btn-primary">写入host</button>
+                    </div>
+                </div>
+                <div class="tab-pane" id="J_tab_vhost">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-bordered">
+                                <caption>虚拟主机列表</caption>
+                                <thead>
+                                    <tr>
+                                        <th>域名</th>
+                                        <th>本地路径</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="J_vhost_list"></tbody>
+                            </table>
+                            <div class="">
+                                <button id="J_vhost_add" class="btn btn-primary">添加一条记录</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>源码</h3>
+                        <button id="J_btn_read_vhost" data-loading-text="读取中" class="btn btn-default">读取vhost</button>
+                        <button id="J_btn_write_vhost" class="btn btn-primary">写入vhost</button>
+                        <br>
+                        <br>
+                        <textarea id="J_vhost" rows="10" cols="100" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+    <!--vhost条目模板-->
+    <script type="x-tmpl-mustache" id="J_tmpl_vhost_item">{{#data}}
+        <tr data-name="{{name}}" data-root="{{root}}" data-proxy="{{_proxy}}" data-input="{{input}}">
+            <td>{{name}}</td>
+            <td>{{root}}</td>
+            <td>
+                <div class="action">
+                    <a href="#" class="btn btn-sm btn-info J_edit">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <a href="#" class="btn btn-sm btn-danger J_delete">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </div>
+            </td>
+        </tr>{{/data}}
+    </script>
+    <!--弹窗模板-->
+    <script type="x-tmpl-mustache" id="J_tmpl_modal_dialog">
+        <div tabindex="-1" role="dialog" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+                        <h4 class="modal-title">{{title}}</h4>
+                    </div>
+                    <div class="modal-body">{{&body}}</div>
+                    <div class="modal-footer">{{#close}}
+                        <button type="button" data-dismiss="modal" class="btn btn-default">{{close}}</button>{{/close}}
+                        <button type="button" class="btn btn-primary J_submit">{{ok}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <!--vhost表单模板-->
+    <script type="x-tmpl-mustache" id="J_tmpl_vhost_form">
+        <form action="/api/vhost/" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-md-2">域名</label>
+                <div class="col-md-6">
+                    <input type="text" name="name" required value="{{name}}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">本地路径</label>
+                <div class="col-md-6">
+                    <input type="text" name="root" required value="{{root}}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">反向代理</label>
+                <div class="col-md-10">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-4">路径</div>
+                                <div class="col-md-6">代理地址</div>
+                                <div class="col-md-2">操作</div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group list-no-border J_proxy_list">
+                                {{#proxys}} {{> body}} {{/proxys}}
+                            </ul>
+                            <button type="button" class="btn btn-info btn-xs J_add">添加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+    <!--proxy模板-->
+    <script type="x-tmpl-mustache" id="J_tmpl_proxy_item">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="proxyDir" value="{{dir}}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="proxyPath" value="{{path}}" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-xs btn-danger J_delete">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </div>
+            </div>
+        </li>
+    </script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <script src="./js/mustache.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/index.js"></script>
+    <script>
+
+    </script>
+</body>
+
+</html>

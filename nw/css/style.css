@@ -1,0 +1,81 @@
+.topbar{
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    background-color: #f60;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+td .action .btn{
+    margin-right: 5px;
+}
+.list-group-item .btn{
+    position: relative;
+    top: 6px;
+}
+.ip{
+    margin-top: 15px;
+}
+.list-no-border{
+
+}
+.list-no-border .list-group-item{
+    border: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+.container{
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+.sidebar{
+    width: 240px;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 30px;
+    background-color: #ccc;
+}
+.sidebar ul{
+    background-color: #2c3e50;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.sidebar ul li{
+    background-color: #34495e;
+    cursor: pointer;
+
+}
+.sidebar ul li a{
+    color: #ddd;
+    display: block;
+    padding: 18px 25px;
+    text-decoration: none;
+}
+.sidebar ul li.active{
+    background-color: transparent;
+}
+.sidebar ul li.active a{
+    color: #fff;
+}
+.main{
+    position: fixed;
+    left: 240px;
+    top: 30px;
+    right: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.tab-content{
+    padding: 5px;
+}
