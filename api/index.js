@@ -1,5 +1,6 @@
 var fs = require('fs');
 var os = require('os');
+var dns = require('native-dns');
 var exec = require('child_process').exec;
 var platform = os.platform();
 
@@ -355,9 +356,177 @@ Httpd.prototype = {
     }
 };
 
+var DNS = function(options) {
+    var option = options || {};
+    this.configPath = option.configPath || './dns.conf';
+    this.port = option.port || 53;
+    this.server = null;
+};
+
+DNS.prototype = {
+    init: function() {
+        var _this = this;
+        var ip = this.getIp();
+        if(!ip) {
+            return console.log('没有取到ip');
+        }
+        var domainObj = this.getDomainObj();
+        console.log('DNS配置：');
+        for(var i in domainObj) {
+            console.log(domainObj[i] + ' ' + i);
+        }
+        console.log('DNS服务启动成功，请在手机上设置DNS：', ip);
+
+        this.server = dns.createServer();
+        this.server.on('request', function(request, response) {
+            //console.log(request)
+            var name = request.question[0].name;
+            var type = request.question[0].type;
+            //console.log(name, type);
+            var ip = domainObj[name];
+            //console.log('ip: ', name, ip)
+            //读取配置，
+            if(ip) {
+                console.log('使用代理：', name);
+                response.answer.push(dns.A({
+                    name: name,
+                    address: ip,//必须为外部可访问地址
+                    ttl: 6
+                }))
+                response.send();
+            } else {
+                _this.request(request, response)
+            }
+        });
+        this.server.on('error', this.onError);
+        this.server.on('listening', this.onListening);
+        this.server.on('socketError', this.onSocketError);
+        this.server.on('close',this.onClose);
+        this.server.serve(this.port);
+    },
+    getIp: function() {
+        var network = os.networkInterfaces();
+        var en0 = network.en0;
+        var ip;
+        if(!en0) {
+            var arr = [];
+            for(var i in network) {
+                arr.push(network[i]);
+            }
+            en0 = arr[0];
+        }
+        en0.forEach(function(item, i) {
+            if(item.family === 'IPv4') {
+                ip = item.address;
+            }
+        });
+        return ip;
+    },
+    readConfigSync: function() {
+        return fs.readFileSync(this.configPath, 'utf8');
+    },
+    writeConfigSync: function(content) {
+        return fs.writeFileSync(this.configPath, content);
+    },
+    getDomainObj: function() {
+        var _this = this;
+        var domainObj = {};
+        var config = fs.readFileSync(this.configPath, 'utf8');
+        if(!config) {
+            console.log('没有找到配置文件');
+            return domainObj;
+        }
+        var hosts = config.split(/\r?\n/);
+        hosts = hosts.filter(function(item) {
+            return item.replace(/\s+/g, '') !== '';
+        });
+        var ipReg = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+        hosts.forEach(function(item) {
+            var ip = _this.getIp();
+            var names = item.split(/ +/);
+            var name = names[0];
+            if(ipReg.test(name)) {
+                ip = name;
+                names.splice(0, 1);
+            }
+            names.forEach(function(item) {
+                domainObj[item] = ip;
+            });
+        });
+        return domainObj;
+    },
+    request: function(request, response) {
+        //console.log(request)
+        var name = request.question[0].name;
+        var type = request.question[0].type;
+        //console.log('外部页面')
+        var question = dns.Question({
+            name: name,
+            type: type
+        });
+        var answers = [];
+
+        var req = dns.Request({
+            question: question,
+            server: {
+                address: '8.8.8.8',
+                port: 53,
+                type: 'udp'
+            },
+            timeout: 1000,
+        });
+
+        req.on('timeout', function() {
+            console.log('Timeout in making request');
+        });
+
+        req.on('message', function(err, answer) {
+            if(err) {
+                return;
+            }
+            answers.push(answer);
+            /*answer.answer.forEach(function(a) {
+                console.log(a.address);
+            });*/
+        });
+
+        req.on('end', function() {
+            //console.log('answers:', answers)
+            if(answers.length > 0) {
+                answers.forEach(function(item) {
+                    //console.log(item.answer);
+                    response.answer = response.answer.concat(item.answer);
+                    response.additional = response.additional.concat(item.additional);
+                });
+                response.send();
+            }else {
+                console.log('answer length < 0; 需要tcp检测：', name)
+            }
+        });
+
+        req.send();
+    },
+    onError: function(err, buff, req, res) {
+        //console.log(err.stack);
+    },
+    onListening: function() {
+        //console.log('event: onListening');
+    },
+    onSocketError: function() {
+        //console.log('event: onSocketError');
+    },
+    onClose: function() {
+        //console.log('event: onClose');
+    },
+    stop: function() {
+        this.server.close();
+    }
+};
+
 module.exports = {
     platform: Platform,
     apache: Apache,
     httpd: Httpd,
-    host: Host
+    host: Host,
+    dns: DNS
 };

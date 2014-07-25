@@ -10,6 +10,9 @@ var host = new api.host();
 
 var apache = new api.apache();
 
+var dns = new api.dns();
+dns.init();
+
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -248,6 +251,26 @@ router.put('/api/vhost/:name', function(req, res) {
 router.delete('/api/vhost/:name', function(req, res) {
     var name = req.params.name;
     var result = httpd.removeItem(name);
+    var jsonp = {
+        success: true,
+        data: result
+    };
+    res.jsonp(jsonp);
+});
+
+
+//dns
+router.get('/dns', function(req, res) {
+    var result = dns.readConfigSync();
+    var jsonp = {
+        success: true,
+        data: result
+    };
+    res.jsonp(jsonp);
+});
+router.post('/dns', function(req, res) {
+    var content = req.body.content;
+    var result = dns.writeConfigSync(content);
     var jsonp = {
         success: true,
         data: result
