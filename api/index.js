@@ -119,13 +119,14 @@ var Httpd = function() {
     //正则
     this.pattern = {
         vhost: /<VirtualHost\s+[^>]*?>[\s\S]*?<\/VirtualHost>/ig,
-        serverName: /ServerName\s+"?(.+)"?/,
-        documentRoot: /DocumentRoot\s+("?)(.+)(\1)/,
+        serverName: /ServerName +("?)(.+)(\1)(?:\r?\n)/,
+        documentRoot: /DocumentRoot +("?)(.+)(\1)(?:\r?\n)/,
         proxy: {
-            pass: /[^\n]*ProxyPass +.* +.*(?:\n?\r?)/ig,
-            request: /[^\n]*ProxyRequests\s+Off(?:\n?\r?)/ig,
-            proxy: /[^\n]*<Proxy\s+[^>]*?>[\s\S]*?<\/Proxy>(?:\n?\r?)/ig,
-            reverse: /[^\n]*ProxyPassReverse +.* +.*(?:\n?\r?)/ig
+            pass: /[^\n]*ProxyPass +.* +.*(?:\r?\n)/ig,
+            request: /[^\n]*ProxyRequests\s+Off(?:\r?\n)/ig,
+            proxy: /[^\n]*<Proxy\s+[^>]*?>[\s\S]*?<\/Proxy>(?:\r?\n)/ig,
+            reverse: /[^\n]*ProxyPassReverse +.* +.*(?:\r?\n)/ig
+            //扩展ProxyPassMatch
         }
     };
 };
@@ -199,8 +200,8 @@ Httpd.prototype = {
     //获取对象
     getObj: function(data) {
         var _this = this;
-        var name = data.match(this.pattern.serverName);
-        var root = data.match(this.pattern.documentRoot);
+        var name = data.match(this.pattern.serverName) || [];
+        var root = data.match(this.pattern.documentRoot) || [];
         //var proxy = data.match(this.pattern.proxy.reverse);
         //console.log(data, data.match(this.pattern.proxy.pass));
         var proxy = {
@@ -221,7 +222,7 @@ Httpd.prototype = {
             });
         }
         return {
-            name: name[1],
+            name: name[2],
             root: root[2],
             proxy: proxy,
             input: data
