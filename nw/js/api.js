@@ -380,7 +380,6 @@ DNS.prototype = {
         if(this.server) {
             this.server.close();
         }
-        console.log(dns)
         this.server = dns.createServer();
         this.server.on('request', function(request, response) {
             //console.log(request)
@@ -527,10 +526,10 @@ DNS.prototype = {
     }
 };
 
-module.exports = {
+/*module.exports = {
     platform: Platform,
     apache: Apache,
     httpd: Httpd,
     host: Host,
     dns: DNS
-};
+};*/

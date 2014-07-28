@@ -2,8 +2,8 @@ var httpd = new Httpd();
 httpd.init();
 var host = new Host();
 var apache = new Apache();
-var dns = new DNS();
-dns.init();
+var _dns = new DNS();
+_dns.init();
 var qs = require('qs');
 
 var Dialog = (function() {
@@ -326,7 +326,7 @@ if(localStorage.getItem('env-dns')) {
     $('#J_textarea_dns').val(localStorage.getItem('env-dns'));
 }
 $('#J_dns_read').on('click', function() {
-    var result = dns.readConfigSync();
+    var result = _dns.readConfigSync();
     if(!result) {
         console.log('读取dns配置异常');
         return;
@@ -337,9 +337,9 @@ $('#J_dns_read').on('click', function() {
 
 $('#J_dns_write').on('click', function() {
     var content = $('#J_textarea_dns').val()
-    var result = dns.writeConfigSync(content);
+    var result = _dns.writeConfigSync(content);
     console.log(result);
-    dns.init();
+    _dns.init();
     localStorage.setItem('env-dns', content);
     Dialog.alert('写入成功');
 });
