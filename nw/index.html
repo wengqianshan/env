@@ -36,6 +36,12 @@
                             虚拟主机
                         </a>
                     </li>
+                    <li>
+                        <a href="#J_tab_dns" role="tab" data-toggle="tab">
+                            <span class="glyphicon glyphicon-retweet"></span>
+                            DNS
+                        </a>
+                    </li>
                 </ul>
             </aside>
             <section class="main">
@@ -85,6 +91,15 @@
                             <br>
                             <br>
                             <textarea id="J_vhost" rows="15" cols="100" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="J_tab_dns">
+                        <div class="">
+                            <h3>DNS操作</h3>
+                            <textarea id="J_textarea_dns" rows="15" cols="100" class="form-control"></textarea>
+                            <br>
+                            <button id="J_dns_read" data-loading-text="读取中" class="btn btn-default">读取DNS</button>
+                            <button id="J_dns_write" class="btn btn-primary">写入DNS并重启</button>
                         </div>
                     </div>
                 </div>

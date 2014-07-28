@@ -2,8 +2,8 @@
   "name": "application-name",
   "main": "index.html",
   "window": {
-    "toolbar": false,
-    "frame": false,
+    //"toolbar": false,
+    //"frame": false,
     "width": 1024,
     "height": 600,
     "min_width": 320,
@@ -12,6 +12,7 @@
     "max_height": 600
   },
   "dependencies": {
+    "native-dns": "^0.6.1",
     "qs": "^0.6.6"
   }
 }

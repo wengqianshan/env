@@ -9,6 +9,12 @@ block content
         .well
             button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
         .well
+            h3 DNS管理
+            textarea.form-control(id='J_textarea_dns',rows='10',cols='100')
+            br
+            button.btn.btn-default(id='J_dns_read', data-loading-text='读取中') 读取DNS
+            button.btn.btn-primary(id='J_dns_write') 写入DNS并重启
+        .well
             h3 host操作
             textarea.form-control(id='J_host',rows='10',cols='100')
             br

@@ -89,6 +89,7 @@ Apache.prototype = {
 //HOST
 var Host = function() {
     this.path = Platform.isWin ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts';
+    //this.path = './hosts'
 };
 Host.prototype = {
     //检查权限
@@ -371,12 +372,14 @@ DNS.prototype = {
             return console.log('没有取到ip');
         }
         var domainObj = this.getDomainObj();
-        console.log('DNS配置：');
+        console.log('-----DNS配置-----------------------');
         for(var i in domainObj) {
             console.log(domainObj[i] + ' ' + i);
         }
-        console.log('DNS服务启动成功，请在手机上设置DNS：', ip);
-
+        console.log('-----DNS服务启动成功，请在手机上设置DNS：', ip);
+        if(this.server) {
+            this.server.close();
+        }
         this.server = dns.createServer();
         this.server.on('request', function(request, response) {
             //console.log(request)

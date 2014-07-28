@@ -260,7 +260,7 @@ router.delete('/api/vhost/:name', function(req, res) {
 
 
 //dns
-router.get('/dns', function(req, res) {
+router.get('/api/dns', function(req, res) {
     var result = dns.readConfigSync();
     var jsonp = {
         success: true,
@@ -268,9 +268,10 @@ router.get('/dns', function(req, res) {
     };
     res.jsonp(jsonp);
 });
-router.post('/dns', function(req, res) {
+router.post('/api/dns', function(req, res) {
     var content = req.body.content;
     var result = dns.writeConfigSync(content);
+    dns.init();
     var jsonp = {
         success: true,
         data: result

@@ -2,6 +2,8 @@ var httpd = new Httpd();
 httpd.init();
 var host = new Host();
 var apache = new Apache();
+var dns = new DNS();
+dns.init();
 var qs = require('qs');
 
 var Dialog = (function() {
@@ -317,4 +319,27 @@ $('#J_write').on('click', function() {
             Dialog.alert('写入成功');
         }
     })
+});
+
+//dns
+if(localStorage.getItem('env-dns')) {
+    $('#J_textarea_dns').val(localStorage.getItem('env-dns'));
+}
+$('#J_dns_read').on('click', function() {
+    var result = dns.readConfigSync();
+    if(!result) {
+        console.log('读取dns配置异常');
+        return;
+    }
+    $('#J_textarea_dns').val(result).css('color', '#080');
+    localStorage.setItem('env-dns', result);
+});
+
+$('#J_dns_write').on('click', function() {
+    var content = $('#J_textarea_dns').val()
+    var result = dns.writeConfigSync(content);
+    console.log(result);
+    dns.init();
+    localStorage.setItem('env-dns', content);
+    Dialog.alert('写入成功');
 });

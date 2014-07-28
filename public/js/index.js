@@ -291,3 +291,45 @@ $('#J_write').on('click', function() {
         }
     });
 });
+
+
+if(localStorage.getItem('env-dns')) {
+    $('#J_textarea_dns').val(localStorage.getItem('env-dns'));
+}
+$('#J_dns_read').on('click', function() {
+    var $btn = $(this);
+    $btn.button('loading');
+    $.ajax({
+        url: '/api/dns',
+        type: 'get',
+        dataType: 'jsonp',
+        success: function(json) {
+            console.log(json);
+            $btn.button('reset');
+            $('#J_textarea_dns').val(json.data).css('color', '#080');
+            localStorage.setItem('env-dns', json.data);
+        }
+    });
+});
+
+$('#J_dns_write').on('click', function() {
+    $.ajax({
+        url: '/api/dns',
+        type: 'post',
+        data: {
+            content: $('#J_textarea_dns').val()
+        },
+        dataType: 'jsonp',
+        success: function(json) {
+            console.log(json);
+            if(json.success) {
+                localStorage.setItem('env-dns', $('#J_textarea_dns').val());
+                //$('#J_host').val(json.data);
+                Dialog.alert('写入成功');
+            }else {
+                Dialog.alert('写入失败');
+            }
+            
+        }
+    });
+});

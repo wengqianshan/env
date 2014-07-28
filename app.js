@@ -59,7 +59,7 @@ app.use(function(err, req, res, next) {
 var debug = require('debug')('env');
 app.set('port', process.env.PORT || 5733);
 var server = app.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + server.address().port);
+  console.log('服务启动成功，访问地址： http://localhost:' + server.address().port);
 });
 
 module.exports = app;
