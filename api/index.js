@@ -467,47 +467,62 @@ DNS.prototype = {
             name: name,
             type: type
         });
-        var answers = [];
+        var handleAnswers = function(answers) {
+            answers.forEach(function(item) {
+                //console.log(item.answer);
+                response.answer = response.answer.concat(item.answer);
+                response.additional = response.additional.concat(item.additional);
+            });
+            response.send();
+        };
+        var query = function(question, protocol, callback) {
+            var req = dns.Request({
+                question: question,
+                server: {
+                    address: '8.8.8.8',
+                    port: 53,
+                    type: protocol
+                },
+                timeout: 1000,
+            });
+            var answers = [];
+            req.on('timeout', function() {
+                console.log('Timeout in making request');
+            });
 
-        var req = dns.Request({
-            question: question,
-            server: {
-                address: '8.8.8.8',
-                port: 53,
-                type: 'udp'
-            },
-            timeout: 1000,
-        });
+            req.on('message', function(err, answer) {
+                if(err) {
+                    return;
+                }
+                answers.push(answer);
+            });
 
-        req.on('timeout', function() {
-            console.log('Timeout in making request');
-        });
+            req.on('end', function() {
+                //console.log('answers:', answers)
+                if(answers.length > 0) {
+                    callback(null, answers);
+                }else {
+                    console.log('answer length < 0; 需要tcp检测：', name)
+                    callback(new Error('no result'),null);
+                }
+            });
 
-        req.on('message', function(err, answer) {
+            req.send();
+        };
+        query(question, 'udp', function(err, answers) {
             if(err) {
-                return;
-            }
-            answers.push(answer);
-            /*answer.answer.forEach(function(a) {
-                console.log(a.address);
-            });*/
-        });
-
-        req.on('end', function() {
-            //console.log('answers:', answers)
-            if(answers.length > 0) {
-                answers.forEach(function(item) {
-                    //console.log(item.answer);
-                    response.answer = response.answer.concat(item.answer);
-                    response.additional = response.additional.concat(item.additional);
-                });
-                response.send();
-            }else {
-                console.log('answer length < 0; 需要tcp检测：', name)
+                query(question, 'tcp', function(err, answers) {
+                    if(err) {
+                        console.log('无法处理：', name);
+                    } else {
+                        console.log('TCP处理完成：', name);
+                        handleAnswers(answers);
+                    }
+                })
+            } else {
+                handleAnswers(answers);
             }
         });
-
-        req.send();
     },
     onError: function(err, buff, req, res) {
         //console.log(err.stack);
