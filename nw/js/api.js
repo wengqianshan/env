@@ -135,6 +135,10 @@ var Httpd = function() {
 Httpd.prototype = {
     init: function() {
         var _this = this;
+        if(fs.existsSync(this.path)) {
+            console.log('没有检测到文件' + this.path + '，请确认是否已安装apache');
+            return;
+        }
         this.readFileSync();
         /*var conf = _this.updateItem('webapp.dev', {
             name: 'laiwang.com',
