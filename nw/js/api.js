@@ -526,10 +526,10 @@ DNS.prototype = {
     }
 };
 
-/*module.exports = {
+module.exports = {
     platform: Platform,
     apache: Apache,
     httpd: Httpd,
     host: Host,
     dns: DNS
-};*/
+};
