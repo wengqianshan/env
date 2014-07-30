@@ -3,6 +3,7 @@ var os = require('os');
 var dns = require('native-dns');
 var exec = require('child_process').exec;
 var platform = os.platform();
+var config = require('../config');
 
 
 var Platform = {
@@ -117,7 +118,7 @@ var Httpd = function() {
         data: null,
         items: []
     };
-    this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    this.path = config.apache.vhost || (Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf');
     //this.path = 'httpd-vhosts.conf';
     //正则
     this.pattern = {

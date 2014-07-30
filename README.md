@@ -20,7 +20,7 @@
 
 > mac自带apache，跳过。
 
-> windows下安装[Appserv](http://www.appserv.net/)到D盘(先这么着吧，稍候改为自定义)
+> windows下安装[Appserv](http://www.appserv.net/)
 
 apache安装成功后请修改httpd.conf
 
@@ -42,6 +42,9 @@ Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
 ## 开始使用
 
 1. 下载代码到本地目录
+
+ > windows下需要修改配置文件config.js，设置vhost
+ 
 2. 安装npm包
  ````
  npm install
