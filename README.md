@@ -40,6 +40,9 @@ apache安装成功后请修改httpd.conf
 Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
 ````
 
+> 使用代理功能还需要开启模块 `mod_proxy.so` 和 `mod_proxy_http.so`：取消前面的`#`号后重启apache。
+
+
 ## 开始使用
 
 1. 下载代码到本地目录
