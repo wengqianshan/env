@@ -14,6 +14,7 @@
 ### nodejs
 
 > mac下推荐使用 [homebrew](http://brew.sh/) 安装
+
 > windows下请下载安装包 http://nodejs.org/ 安装
 
 ### apache
