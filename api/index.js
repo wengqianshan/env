@@ -4,6 +4,7 @@ var dns = require('native-dns');
 var exec = require('child_process').exec;
 var platform = os.platform();
 
+
 var Platform = {
     interfaces: os.networkInterfaces(),
     isMac: platform === 'darwin',
@@ -371,6 +372,10 @@ var DNS = function(options) {
 DNS.prototype = {
     init: function() {
         var _this = this;
+        if(!fs.existsSync(this.configPath)) {
+            console.log('没有检测到文件' + this.configPath + '，已自动为您创建');
+            fs.writeFileSync(this.configPath, '');
+        }
         var ip = this.getIp();
         if(!ip) {
             return console.log('没有取到ip');
@@ -440,7 +445,7 @@ DNS.prototype = {
         var domainObj = {};
         var config = fs.readFileSync(this.configPath, 'utf8');
         if(!config) {
-            console.log('没有找到配置文件');
+            //console.log('没有找到配置文件或配置文件为空');
             return domainObj;
         }
         var hosts = config.split(/\r?\n/);
