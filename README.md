@@ -13,23 +13,30 @@
 
 ### nodejs
 
-> mac下推荐使用[homebrew](http://brew.sh/)安装
-> windows下请下载安装包http://nodejs.org/安装
+> mac下推荐使用 [homebrew](http://brew.sh/) 安装
+> windows下请下载安装包 http://nodejs.org/ 安装
 
 ### apache
 
-> mac自带apache，跳过
-> windows下安装[Appserv](http://www.appserv.net/)到D盘(先这么着吧，稍候改为随意)
+> mac自带apache，跳过。
 
-* apache安装成功后请修改httpd.conf，找到：
+> windows下安装[Appserv](http://www.appserv.net/)到D盘(先这么着吧，稍候改为自定义)
+
+apache安装成功后请修改httpd.conf
+
+> mac下路径为 /private/etc/apache2/httpd.conf
+
+> windows下路径为 D:/AppServ/Apache2.2/conf/httpd.conf
+
+找到：
 ````
 # Virtual hosts
-#Include /private/etc/apache2/extra/httpd-vhosts.conf
+#Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
 ````
 去掉注释，改为：
 ````
 # Virtual hosts
-Include /private/etc/apache2/extra/httpd-vhosts.conf
+Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
 ````
 
 ## 开始使用
