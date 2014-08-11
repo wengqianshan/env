@@ -34,6 +34,16 @@ router.post('/api/apache/restart', function(req, res) {
         res.jsonp(jsonp);
     });
 });
+/*router.post('/api/apache/check', function(req, res) {
+    apache.check(function(err, stdout, stderr) {
+        //console.log(err, stdout, stderr);
+        var jsonp = {
+            success: !err,
+            data: stdout
+        };
+        res.jsonp(jsonp);
+    });
+});*/
 
 router.get('/api/ip', function(req, res) {
     var network = os.networkInterfaces();

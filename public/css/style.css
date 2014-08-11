@@ -107,6 +107,9 @@ td .action .btn{
 .sidebar ul li.active a{
     color: #fff;
 }
+.quick-action{
+    padding: 10px;
+}
 .main{
     position: absolute;
     left: 240px;

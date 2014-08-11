@@ -20,17 +20,20 @@ block content
                     a(href='#J_tab_dns', role='tab', data-toggle='tab')
                         span.glyphicon.glyphicon-retweet&nbsp;
                         | DNS
+            .quick-action
+                button(type="button", id='J_restart', data-loading-text='重启中...').btn.btn-primary 重启Apache
+                //button(type="button", data-toggle='tooltip', data-placement='bottom', title='检查Apache配置', id='J_apache_check', data-loading-text='检查中...').btn.btn-default 检查Apache
         section.main
             .tab-content
                 #J_tab_home.tab-pane.active
                     .ip
-                        p 当前IP：
-                            input#J_ip(readonly, style='border: none; background-color: transparent; outline: none; font-size: 48px;')
-                        p
+                        p 本机IP：
+                        input#J_ip(readonly, style='border: none; background-color: transparent; outline: none; font-size: 48px;')
+                        //p
                             button.btn.btn-primary(id='J_restart', data-loading-text='重启中...') 重启Apache
                 #J_tab_host.tab-pane
                     h3 host操作
-                    textarea.form-control(id='J_host',rows='10',cols='100')
+                    textarea.form-control(id='J_host',rows='20',cols='100')
                     br
                     button.btn.btn-default(id='J_read', data-loading-text='读取中') 读取host
                     button.btn.btn-primary(id='J_write') 写入host
@@ -49,13 +52,13 @@ block content
                                 button.btn.btn-primary#J_vhost_add 添加一条记录
                     div
                         h3 vhost源码
-                        textarea.form-control(id='J_vhost',rows='10',cols='100')
+                        textarea.form-control(id='J_vhost',rows='20',cols='100')
                         br
                         button.btn.btn-default(id='J_btn_read_vhost', data-loading-text='读取中') 读取vhost
                         button.btn.btn-primary(id='J_btn_write_vhost') 写入vhost
                 #J_tab_dns.tab-pane
                     h3 DNS管理
-                    textarea.form-control(id='J_textarea_dns',rows='10',cols='100')
+                    textarea.form-control(id='J_textarea_dns',rows='20',cols='100')
                     br
                     button.btn.btn-default(id='J_dns_read', data-loading-text='读取中') 读取DNS
                     button.btn.btn-primary(id='J_dns_write') 写入DNS并重启

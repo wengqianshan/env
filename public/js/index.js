@@ -233,12 +233,28 @@ $('#J_restart').on('click', function() {
         type: 'post',
         dataType: 'jsonp',
         success: function(json) {
-            //console.log(json);
+            console.log(json);
             $btn.button('reset');
             Dialog.alert('重启成功');
         }
     });
 });
+//apache语法检查
+/*$('#J_apache_check').on('click', function() {
+    //console.log('重启');
+    var $btn = $(this);
+    $btn.button('loading');
+    $.ajax({
+        url: '/api/apache/check',
+        type: 'post',
+        dataType: 'jsonp',
+        success: function(json) {
+            //console.log(json);
+            $btn.button('reset');
+            Dialog.alert(json.data);
+        }
+    });
+});*/
 //host
 
 /*$.ajax({
