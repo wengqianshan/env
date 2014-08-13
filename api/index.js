@@ -489,7 +489,7 @@ DNS.prototype = {
             var req = dns.Request({
                 question: question,
                 server: {
-                    address: '8.8.8.8',
+                    address: config.dns.nameserver || '8.8.8.8',
                     port: 53,
                     type: protocol
                 },
