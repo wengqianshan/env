@@ -34,7 +34,8 @@ $.ajax({
         })
     }
 });
-$('#J_ip').on('mouseenter', function() {
+$('#J_ip').on('mousedown', function(e) {
+    e.preventDefault();
     $(this).select();
 });
 
