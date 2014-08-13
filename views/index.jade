@@ -74,21 +74,6 @@ block content
                     a.btn.btn-sm.btn-danger.J_delete(href='#')
                         span.glyphicon.glyphicon-remove
         | {{/data}}
-    //弹窗模板
-    script(type='x-tmpl-mustache', id='J_tmpl_modal_dialog')
-        .modal.fade(tabindex='-1', role='dialog')
-            .modal-dialog
-                .modal-content
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-                        h4.modal-title {{title}}
-                    .modal-body
-                        | {{&body}}
-                    .modal-footer
-                        {{#close}}
-                        button.btn.btn-default(type='button', data-dismiss='modal') {{close}}
-                        {{/close}}
-                        button.btn.btn-primary.J_submit(type='button') {{ok}}
     //vhost表单模板
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_form')
         form.form-horizontal(action="/api/vhost/", method='post')

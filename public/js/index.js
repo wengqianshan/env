@@ -75,16 +75,6 @@ $('#J_btn_write_vhost').on('click', function() {
 
 //添加
 $('#J_vhost_add').on('click', function() {
-    var dialogTmpl = $('#J_tmpl_modal_dialog').html();
-    var dialog = Mustache.render(dialogTmpl, {
-        title: '添加vhost',
-        body: Mustache.render($('#J_tmpl_vhost_form').html()),
-        close: '关闭',
-        ok: '提交'
-    }/*, {
-        body: Mustache.render($('#J_tmpl_vhost_form').html())
-    }*/);
-    
     BootstrapDialog.show({
         title: '添加虚拟主机',
         message: function(dialogRef) {
@@ -161,27 +151,6 @@ $('#J_vhost_list').on('click', '.J_edit', function(e) {
     var name = $tr.attr('data-name');
     var root = $tr.attr('data-root');
     var proxy = JSON.parse($tr.attr('data-proxy'));
-    var dialogTmpl = $('#J_tmpl_modal_dialog').html();
-    var dialog = Mustache.render(dialogTmpl, {
-        title: '更新',
-        body: Mustache.render($('#J_tmpl_vhost_form').html(), {
-            name: name,
-            root: root,
-            proxys: proxy.list
-        }, {
-            body: $('#J_tmpl_proxy_item').html()
-        }),
-        close: '关闭',
-        ok: '提交'
-    }/*, {
-        body: Mustache.render($('#J_tmpl_vhost_form').html(), {
-            name: name,
-            root: root,
-            proxys: proxy.list
-        }, {
-            body: $('#J_tmpl_proxy_item').html()
-        })
-    }*/);
     BootstrapDialog.show({
         title: '编辑虚拟主机',
         message: function() {
