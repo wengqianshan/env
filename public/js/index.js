@@ -248,7 +248,7 @@ $('#J_vhost_list').on('click', '.J_delete', function(e) {
     BootstrapDialog.show({
         title: '提示',
         message: '真要删除吗？',
-        closable: false,
+        closable: true,
         buttons: [{
             label: '确定',
             cssClass: 'btn-primary',
