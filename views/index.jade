@@ -4,7 +4,7 @@ block content
     .container
         aside.sidebar
             ul#J_side_tab
-                li.active
+                li
                     a(href='#J_tab_home', role='tab', data-toggle='tab')
                         span.glyphicon.glyphicon-home&nbsp;
                         | 控制台
@@ -26,7 +26,7 @@ block content
                 button(type="button", id='J_restart', data-loading-text='重启中...').btn.btn-primary 重启Apache
         section.main
             .tab-content
-                #J_tab_home.tab-pane.active
+                #J_tab_home.tab-pane
                     h4 使用帮助
                     ul
                         li 

@@ -1,3 +1,21 @@
+//hash 控制
+$(document).on('click', '#J_side_tab a', function(e) {
+    location.hash = $(this).attr('href');
+});
+
+function hashChange() {
+    var hash = location.hash;
+    if (!hash) {
+        hash = '#J_tab_home';
+    }
+    $('#J_side_tab a[href="' + hash + '"]').tab('show');    
+}
+$(window).on('hashchange', function(e) {
+    hashChange();
+});
+hashChange();
+// hash end
+
 
 //获取IP
 $.ajax({
