@@ -1,6 +1,8 @@
 var os = require('os');
 var express = require('express');
 var router = express.Router();
+var fs = require('fs');
+var config = require('../config');
 var api = require('../api/index');
 //console.log(api);
 var httpd = new api.httpd();
@@ -17,6 +19,37 @@ dns.init();
 /* GET home page. */
 router.get('/', function(req, res) {
   res.render('index', { title: '本地环境工具' });
+});
+
+//combo
+router.get('/combo', function(req, res) {
+    //console.log('++++++++++++++++++++')
+    var search = req._parsedUrl.search;
+    if(!search || search.indexOf('??') < 0) {
+        return res.send('缺少参数');
+    }
+    var str = search.substr(2).replace(/ilw/g, config.combo.dir).replace(/(\d+\.){2}\d+/g, config.combo.dist).replace(/(\?|#).*$/g, '');
+    if(!str) {
+        return res.send('没有文件');
+    }
+    var files = str.split(',');
+    //console.log(files)
+    var content = '';
+    var errors = [];
+    files.forEach(function(file){
+        var exist = fs.existsSync(file);
+        if(!exist) {
+            errors.push('文件不存在: ' + file);
+            return;
+        }
+        var c = fs.readFileSync(file, 'utf8');
+        content += c;
+    });
+    if(errors.length > 0) {
+        return res.send(errors.join('<br/>'));
+    }
+    res.type('application/x-javascript');
+    res.send(content);
 });
 
 router.post('/', function(req, res) {
