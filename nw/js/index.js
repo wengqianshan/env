@@ -91,7 +91,11 @@ $('#J_btn_write_vhost').on('click', function() {
         if(err) {
             
         }
-        Dialog.alert('写入成功');
+        BootstrapDialog.alert({
+            title: '提示',
+            message: '写入成功',
+            buttonLabel: '好的'
+        });
         localStorage.setItem('env-vhost', data);
     });
 });
