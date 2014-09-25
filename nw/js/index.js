@@ -44,7 +44,8 @@ en0.forEach(function(item, i) {
 })
 
 
-$('#J_ip').on('mousedown', function() {
+$('#J_ip').on('mousedown', function(e) {
+    e.preventDefault();
     $(this).select();
 });
 
