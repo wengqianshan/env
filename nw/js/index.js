@@ -9,28 +9,6 @@ var dns = new api.dns();
 dns.init();
 var qs = require('qs');
 
-var Dialog = (function() {
-    var template = $('#J_tmpl_modal_dialog').html();
-    return {
-        alert: function(msg) {
-            var html = Mustache.render(template, {
-                title: '提示 ',
-                body: msg,
-                ok: '确定'
-            });
-            var $html = $(html);
-            $html.modal();
-            $html.find('.btn-primary').on('click', function() {
-                $html.modal('hide');
-            })
-        },
-        confirm: function() {
-
-        },
-
-    }
-}());
-
 //hash 控制
 $(document).on('click', '#J_side_tab a', function(e) {
     location.hash = $(this).attr('href');
