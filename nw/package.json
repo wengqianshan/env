@@ -1,5 +1,5 @@
 {
-  "name": "application-name",
+  "name": "env",
   "main": "index.html",
   "window": {
     "toolbar": false,

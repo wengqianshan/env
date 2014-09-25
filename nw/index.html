@@ -1,206 +1,171 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>本地环境配置工具</title>
+  <head>
+    <meta charset="UTF-8">
+    <title>本地环境工具</title>
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
     <!--link(rel='stylesheet', href='/bootstrap/css/bootstrap-theme.min.css')-->
+    <link rel="stylesheet" href="./css/bootstrap-dialog.min.css">
     <link rel="stylesheet" href="./css/style.css">
-</head>
-
-<body>
-    <div class="window">
-        <div class="topbar">
-            <span class="glyphicon glyphicon-remove-sign remove" onclick="window.close();"></span>
-            本地环境配置工具
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <ul id="J_side_tab">
+          <li><a href="#J_tab_home" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-home">&nbsp;</span>控制台</a></li>
+          <li><a href="#J_tab_host" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-list-alt">&nbsp;</span>HOST</a></li>
+          <li><a href="#J_tab_vhost" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-send">&nbsp;</span>虚拟主机</a></li>
+          <li><a href="#J_tab_dns" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-retweet">&nbsp;</span>DNS</a></li>
+        </ul>
+        <div class="quick-action">
+          <!--button(type="button", data-toggle='tooltip', data-placement='bottom', title='检查Apache配置', id='J_apache_check', data-loading-text='检查中...').btn.btn-default 检查Apache-->
+          <input id="J_ip" readonly style="border: none; background-color: transparent; outline: none; font-size: 2em;">
+          <button type="button" id="J_restart" data-loading-text="重启中..." class="btn btn-primary">重启Apache</button>
         </div>
-        <div class="container">
-            <aside class="sidebar">
-                <ul class="" id="J_side_tab">
-                    <li class="active">
-
-                        <a href="#J_tab_home" role="tab" data-toggle="tab">
-                            <span class="glyphicon glyphicon-home"></span>
-                            控制台
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#J_tab_host" role="tab" data-toggle="tab">
-                            <span class="glyphicon glyphicon-list-alt"></span>
-                            Host
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#J_tab_vhost" role="tab" data-toggle="tab">
-                            <span class="glyphicon glyphicon-send"></span>
-                            虚拟主机
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#J_tab_dns" role="tab" data-toggle="tab">
-                            <span class="glyphicon glyphicon-retweet"></span>
-                            DNS
-                        </a>
-                    </li>
-                </ul>
-            </aside>
-            <section class="main">
-                <div class="tab-content">
-                    <div class="tab-pane active" id="J_tab_home">
-                        <div class="ip">
-                            <p>当前IP：
-                                <input id="J_ip" readonly style="border: none; background-color: transparent; outline: none; font-size: 48px;">
-                            </p>
-                        </div>
-                        <div class="">
-                            <button id="J_restart" data-loading-text="重启中..." class="btn btn-primary">重启Apache</button>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="J_tab_host">
-                        <div class="">
-                            <h3>host操作</h3>
-                            <textarea id="J_host" rows="15" cols="100" class="form-control"></textarea>
-                            <br>
-                            <button id="J_read" data-loading-text="读取中" class="btn btn-default">读取host</button>
-                            <button id="J_write" class="btn btn-primary">写入host</button>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="J_tab_vhost">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-striped table-bordered">
-                                    <caption>虚拟主机列表</caption>
-                                    <thead>
-                                        <tr>
-                                            <th>域名</th>
-                                            <th>本地路径</th>
-                                            <th>操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="J_vhost_list"></tbody>
-                                </table>
-                                <div class="">
-                                    <button id="J_vhost_add" class="btn btn-primary">添加一条记录</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h3>源码</h3>
-                            <button id="J_btn_read_vhost" data-loading-text="读取中" class="btn btn-default">读取vhost</button>
-                            <button id="J_btn_write_vhost" class="btn btn-primary">写入vhost</button>
-                            <br>
-                            <br>
-                            <textarea id="J_vhost" rows="15" cols="100" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="J_tab_dns">
-                        <div class="">
-                            <h3>DNS操作</h3>
-                            <textarea id="J_textarea_dns" rows="15" cols="100" class="form-control"></textarea>
-                            <br>
-                            <button id="J_dns_read" data-loading-text="读取中" class="btn btn-default">读取DNS</button>
-                            <button id="J_dns_write" class="btn btn-primary">写入DNS并重启</button>
-                        </div>
-                    </div>
+      </aside>
+      <section class="main">
+        <div class="tab-content">
+          <div id="J_tab_home" class="tab-pane">
+            <h4>使用帮助</h4>
+            <ul>
+              <li><strong>修改host方法</strong>
+                <p>1. 进入host修改页面，先点击读取，然后在编辑框修改host，修改完毕后点击保存即可.</p>
+              </li>
+              <li><strong>新建虚拟主机本地访问方法</strong>
+                <p>1. 进入虚拟主机管理页面，点击添加</p>
+                <p>2. 输入域名和本地路径，点击提交</p>
+                <p>3. 点击左栏的重启apache</p>
+                <p>4. host里面加入刚才的域名，指向127.0.0.1，保存</p>
+                <p>5. 浏览器访问刚加的域名</p>
+              </li>
+              <li><strong>手机访问电脑的虚拟主机方法</strong>
+                <p>1. 进入dns页面，添加一个虚拟主机已有域名，如demo.laiwang.com</p>
+                <p>2. 同局域网的手机设置dns为当前电脑ip</p>
+                <p>3. 手机访问demo.laiwang.com</p>
+              </li>
+              <li><strong>虚拟主机的反向代理配置方法</strong>
+                <p><i>先确保已经设置dns和虚拟主机</i></p>
+                <p>1. 本地开启调试环境，如http://localhost:9000/</p>
+                <p>2. 虚拟主机添加反向代理，如： /   http://localhost:9000/</p>
+                <p>3. 手机访问之前配置的域名</p>
+              </li>
+              <li><strong>DNS设置方法</strong>
+                <p>支持以下3种配置方式：<br><code>demo.laiwang.com</code>将demo.laiwang.com代理到本机<br><code>demo.laiwang.com demo2.laiwang.com</code>将demo.laiwang.com demo2.laiwang.com 代理到本机<br><code>10.68.108.15 demo.laiwang.com demo2.laiwang.com</code>将demo.laiwang.com demo2.laiwang.com代理到10.68.108.15</p>
+              </li>
+            </ul>
+            <h4>常见问题</h4>
+            <ul>
+              <li>待添加...</li>
+            </ul>
+          </div>
+          <div id="J_tab_host" class="tab-pane">
+            <h3>host操作</h3>
+            <textarea id="J_host" rows="20" cols="100" class="form-control"></textarea><br>
+            <button id="J_read" data-loading-text="读取中" class="btn btn-default">读取</button>
+            <button id="J_write" class="btn btn-primary">保存</button>
+          </div>
+          <div id="J_tab_vhost" class="tab-pane">
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table table-striped table-bordered">
+                  <caption>虚拟主机列表</caption>
+                  <thead>
+                    <tr>
+                      <th>域名</th>
+                      <th>本地路径</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="J_vhost_list"></tbody>
+                </table>
+                <div class="well">      
+                  <button id="J_vhost_add" class="btn btn-primary">添加</button>
                 </div>
-            </section>
+              </div>
+            </div>
+            <div>
+              <h3>vhost源码</h3>
+              <textarea id="J_vhost" rows="20" cols="100" class="form-control"></textarea><br>
+              <button id="J_btn_read_vhost" data-loading-text="读取中" class="btn btn-default">读取vhost</button>
+              <button id="J_btn_write_vhost" class="btn btn-primary">写入vhost</button>
+            </div>
+          </div>
+          <div id="J_tab_dns" class="tab-pane">
+            <h3>DNS管理</h3>
+            <textarea id="J_textarea_dns" rows="20" cols="100" class="form-control"></textarea><br>
+            <button id="J_dns_read" data-loading-text="读取中" class="btn btn-default">读取DNS</button>
+            <button id="J_dns_write" class="btn btn-primary">写入DNS并重启</button>
+          </div>
         </div>
+      </section>
     </div>
-    
     <!--vhost条目模板-->
     <script type="x-tmpl-mustache" id="J_tmpl_vhost_item">{{#data}}
-        <tr data-name="{{name}}" data-root="{{root}}" data-proxy="{{_proxy}}" data-input="{{input}}">
-            <td>{{name}}</td>
-            <td>{{root}}</td>
-            <td>
-                <div class="action">
-                    <a href="#" class="btn btn-sm btn-info J_edit">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </a>
-                    <a href="#" class="btn btn-sm btn-danger J_delete">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </div>
-            </td>
-        </tr>{{/data}}
-    </script>
-    <!--弹窗模板-->
-    <script type="x-tmpl-mustache" id="J_tmpl_modal_dialog">
-        <div tabindex="-1" role="dialog" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
-                        <h4 class="modal-title">{{title}}</h4>
-                    </div>
-                    <div class="modal-body">{{&body}}</div>
-                    <div class="modal-footer">{{#close}}
-                        <button type="button" data-dismiss="modal" class="btn btn-default">{{close}}</button>{{/close}}
-                        <button type="button" class="btn btn-primary J_submit">{{ok}}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <tr data-name="{{name}}" data-root="{{root}}" data-proxy="{{_proxy}}" data-input="{{input}}">
+        <td>{{name}}</td>
+        <td>{{root}}</td>
+        <td>
+          <div class="action"><a href="#" class="btn btn-sm btn-info J_edit"><span class="glyphicon glyphicon-pencil"></span></a><a href="#" class="btn btn-sm btn-danger J_delete"><span class="glyphicon glyphicon-remove"></span></a></div>
+        </td>
+      </tr>{{/data}}
     </script>
     <!--vhost表单模板-->
     <script type="x-tmpl-mustache" id="J_tmpl_vhost_form">
-        <form action="/api/vhost/" method="post" class="form-horizontal">
-            <div class="form-group">
-                <label class="control-label col-md-2">域名</label>
-                <div class="col-md-6">
-                    <input type="text" name="name" required value="{{name}}" class="form-control">
+      <form action="/api/vhost/" method="post" class="form-horizontal">
+        <div class="form-group">
+          <label class="control-label col-md-2">域名</label>
+          <div class="col-md-6">
+            <input type="text" name="name" required value="{{name}}" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-2">本地路径</label>
+          <div class="col-md-6">
+            <input type="text" name="root" required value="{{root}}" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-2">反向代理</label>
+          <div class="col-md-10">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-md-4">路径</div>
+                  <div class="col-md-6">代理地址</div>
+                  <div class="col-md-2">操作</div>
                 </div>
+              </div>
+              <div class="panel-body">
+                <ul class="list-group list-no-border J_proxy_list">
+                  {{#proxys}}
+                  {{> body}}
+                  {{/proxys}}
+                </ul>
+                <button type="button" class="btn btn-info btn-xs J_add">添加</button>
+              </div>
             </div>
-            <div class="form-group">
-                <label class="control-label col-md-2">本地路径</label>
-                <div class="col-md-6">
-                    <input type="text" name="root" required value="{{root}}" class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-2">反向代理</label>
-                <div class="col-md-10">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-md-4">路径</div>
-                                <div class="col-md-6">代理地址</div>
-                                <div class="col-md-2">操作</div>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <ul class="list-group list-no-border J_proxy_list">
-                                {{#proxys}} {{> body}} {{/proxys}}
-                            </ul>
-                            <button type="button" class="btn btn-info btn-xs J_add">添加</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+          </div>
+        </div>
+      </form>
     </script>
     <!--proxy模板-->
     <script type="x-tmpl-mustache" id="J_tmpl_proxy_item">
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-md-4">
-                    <input type="text" name="proxyDir" value="{{dir}}" class="form-control">
-                </div>
-                <div class="col-md-6">
-                    <input type="text" name="proxyPath" value="{{path}}" class="form-control">
-                </div>
-                <div class="col-md-2">
-                    <a href="#" class="btn btn-xs btn-danger J_delete">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </div>
-            </div>
-        </li>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-md-4">
+            <input type="text" name="proxyDir" value="{{dir}}" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <input type="text" name="proxyPath" value="{{path}}" class="form-control">
+          </div>
+          <div class="col-md-2"><a href="#" class="btn btn-xs btn-danger J_delete"><span class="glyphicon glyphicon-remove"></span></a></div>
+        </div>
+      </li>
     </script>
     <script src="./js/jquery.min.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap-dialog.min.js"></script>
     <script src="./js/mustache.js"></script>
     <script src="./js/index.js"></script>
-</body>
-
+  </body>
 </html>

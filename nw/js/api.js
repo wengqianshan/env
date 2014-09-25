@@ -3,6 +3,8 @@ var os = require('os');
 var dns = require('native-dns');
 var exec = require('child_process').exec;
 var platform = os.platform();
+var config = require('../config');
+
 
 var Platform = {
     interfaces: os.networkInterfaces(),
@@ -116,7 +118,7 @@ var Httpd = function() {
         data: null,
         items: []
     };
-    this.path = Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf';
+    this.path = config.apache.vhost || (Platform.isWin ? 'D:/AppServ/Apache2.2/conf/extra/httpd-vhosts.conf' : '/etc/apache2/extra/httpd-vhosts.conf');
     //this.path = 'httpd-vhosts.conf';
     //正则
     this.pattern = {
@@ -135,7 +137,7 @@ var Httpd = function() {
 Httpd.prototype = {
     init: function() {
         var _this = this;
-        if(fs.existsSync(this.path)) {
+        if(!fs.existsSync(this.path)) {
             console.log('没有检测到文件' + this.path + '，请确认是否已安装apache');
             return;
         }
@@ -371,6 +373,10 @@ var DNS = function(options) {
 DNS.prototype = {
     init: function() {
         var _this = this;
+        if(!fs.existsSync(this.configPath)) {
+            console.log('没有检测到文件' + this.configPath + '，已自动为您创建');
+            fs.writeFileSync(this.configPath, '');
+        }
         var ip = this.getIp();
         if(!ip) {
             return console.log('没有取到ip');
@@ -440,7 +446,7 @@ DNS.prototype = {
         var domainObj = {};
         var config = fs.readFileSync(this.configPath, 'utf8');
         if(!config) {
-            console.log('没有找到配置文件');
+            //console.log('没有找到配置文件或配置文件为空');
             return domainObj;
         }
         var hosts = config.split(/\r?\n/);
@@ -483,7 +489,7 @@ DNS.prototype = {
             var req = dns.Request({
                 question: question,
                 server: {
-                    address: '8.8.8.8',
+                    address: config.dns.nameserver || '8.8.8.8',
                     port: 53,
                     type: protocol
                 },

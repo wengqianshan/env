@@ -31,6 +31,24 @@ var Dialog = (function() {
     }
 }());
 
+//hash 控制
+$(document).on('click', '#J_side_tab a', function(e) {
+    location.hash = $(this).attr('href');
+});
+
+function hashChange() {
+    var hash = location.hash;
+    if (!hash) {
+        hash = '#J_tab_home';
+    }
+    $('#J_side_tab a[href="' + hash + '"]').tab('show');    
+}
+$(window).on('hashchange', function(e) {
+    hashChange();
+});
+hashChange();
+// hash end
+
 //获取IP
 var network = os.networkInterfaces();
 var en0 = network.en0;
@@ -48,7 +66,7 @@ en0.forEach(function(item, i) {
 })
 
 
-$('#J_ip').on('mouseenter', function() {
+$('#J_ip').on('mousedown', function() {
     $(this).select();
 });
 
@@ -102,84 +120,101 @@ $('#J_btn_write_vhost').on('click', function() {
 
 //添加
 $('#J_vhost_add').on('click', function() {
-    var dialogTmpl = $('#J_tmpl_modal_dialog').html();
-    var dialog = Mustache.render(dialogTmpl, {
-        title: '添加vhost',
-        body: Mustache.render($('#J_tmpl_vhost_form').html()),
-        close: '关闭',
-        ok: '提交'
-    }/*, {
-        body: Mustache.render($('#J_tmpl_vhost_form').html())
-    }*/);
-    var $dialog = $(dialog);
-    $dialog.modal();
-    setTimeout(function() {
-        $dialog.find('.form-control').eq(0).focus();
-    }, 500);
-    
-    $dialog.on('click', '.J_delete', function(e) {
-        e.preventDefault();
-        var $li = $(this).closest('li');
-        $li.remove();
-    });
-    $dialog.on('click', '.J_add', function(e) {
-        var $html = $(Mustache.render($('#J_tmpl_proxy_item').html()));
-        $dialog.find('.J_proxy_list').append($html);
-        $html.find('.form-control').eq(0).focus();
-    });
-    $dialog.on('click', '.J_submit', function() {
-        var $form = $dialog.find('form');
-        var param = $form.serialize();
-        var body = qs.parse(param);
-        var name = body.name;
-        var root = body.root;
-        var proxyDir = body.proxyDir;
-        var proxyPath = body.proxyPath;
-        if(!name) {
-            alert('name不能为空');
-        }
-        var item = httpd.getItem(name);
-        //console.log(item);
-        if(item) {
-            alert('该配置已存在');
-        }
-        if(!root) {
-            alert('root不能为空');
-        }
-        var obj = {
-            name: name,
-            root: root
-        };
-        //如果有配置代理
-        if(proxyDir && proxyPath) {
-            var proxyArr = [];
-            if(typeof proxyDir === 'string') {
-                proxyArr.push({
-                    dir: proxyDir,
-                    path: proxyPath
-                });
-            }else if(typeof proxyDir === 'object') {
-                proxyDir.forEach(function(item, i) {
-                    proxyArr.push({
-                        dir: item,
-                        path: proxyPath[i]
+    BootstrapDialog.show({
+        title: '添加虚拟主机',
+        message: function(dialogRef) {
+            var html = Mustache.render($('#J_tmpl_vhost_form').html());
+            var $dialog = $(html);
+            setTimeout(function() {
+                $dialog.find('.form-control').eq(0).focus();
+            }, 500);
+            
+            $dialog.on('click', '.J_delete', function(e) {
+                e.preventDefault();
+                var $li = $(this).closest('li');
+                $li.remove();
+            });
+            $dialog.on('click', '.J_add', function(e) {
+                var $html = $(Mustache.render($('#J_tmpl_proxy_item').html()));
+                $dialog.find('.J_proxy_list').append($html);
+                $html.find('.form-control').eq(0).focus();
+            });
+            return $dialog;
+        },
+        buttons: [
+            {
+                label: '提交',
+                cssClass: 'btn-primary',
+                action: function(dialogRef) {
+                    var $form = dialogRef.$modalContent.find('form');
+                    var param = $form.serialize();
+                    var body = qs.parse(param);
+                    var name = body.name;
+                    var root = body.root;
+                    var proxyDir = body.proxyDir;
+                    var proxyPath = body.proxyPath;
+                    if(!name) {
+                        alert('name不能为空');
+                        return;
+                    }
+                    var item = httpd.getItem(name);
+                    //console.log(item);
+                    if(item) {
+                        alert('该配置已存在');
+                        return;
+                    }
+                    if(!root) {
+                        alert('root不能为空');
+                        return;
+                    }
+                    var obj = {
+                        name: name,
+                        root: root
+                    };
+                    //如果有配置代理
+                    if(proxyDir && proxyPath) {
+                        var proxyArr = [];
+                        if(typeof proxyDir === 'string') {
+                            proxyArr.push({
+                                dir: proxyDir,
+                                path: proxyPath
+                            });
+                        }else if(typeof proxyDir === 'object') {
+                            proxyDir.forEach(function(item, i) {
+                                proxyArr.push({
+                                    dir: item,
+                                    path: proxyPath[i]
+                                });
+                            })
+                        }
+                        obj.proxy = proxyArr;
+                    }
+                    var result = httpd.createVhost(obj);
+                    var json = {
+                        success: true,
+                        data: httpd.getObj(result)
+                    };
+                    dialogRef.close();
+                    BootstrapDialog.alert({
+                        title: '提示',
+                        message: '添加成功',
+                        buttonLabel: '好的'
                     });
-                })
+                    json._proxy = function() {
+                        return JSON.stringify(this.proxy);
+                    };
+                    var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
+                    $('#J_vhost_list').append(html);
+                }
+            },
+            {
+                label: '取消',
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }
             }
-            obj.proxy = proxyArr;
-        }
-        var result = httpd.createVhost(obj);
-        var json = {
-            success: true,
-            data: httpd.getObj(result)
-        };
-        $dialog.modal('hide');
-        Dialog.alert('添加成功');
-        json._proxy = function() {
-            return JSON.stringify(this.proxy);
-        };
-        var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
-        $('#J_vhost_list').append(html);
+        ],
+        closable: false
     });
 });
 
@@ -190,87 +225,102 @@ $('#J_vhost_list').on('click', '.J_edit', function(e) {
     var name = $tr.attr('data-name');
     var root = $tr.attr('data-root');
     var proxy = JSON.parse($tr.attr('data-proxy'));
-    var dialogTmpl = $('#J_tmpl_modal_dialog').html();
-    var dialog = Mustache.render(dialogTmpl, {
-        title: '更新',
-        body: Mustache.render($('#J_tmpl_vhost_form').html(), {
-            name: name,
-            root: root,
-            proxys: proxy.list
-        }, {
-            body: $('#J_tmpl_proxy_item').html()
-        }),
-        close: '关闭',
-        ok: '提交'
-    }/*, {
-        body: Mustache.render($('#J_tmpl_vhost_form').html(), {
-            name: name,
-            root: root,
-            proxys: proxy.list
-        }, {
-            body: $('#J_tmpl_proxy_item').html()
-        })
-    }*/);
-    var $dialog = $(dialog);
-    $dialog.modal();
-    $dialog.on('click', '.J_delete', function(e) {
-        e.preventDefault();
-        var $li = $(this).closest('li');
-        $li.remove();
-    });
-    $dialog.on('click', '.J_add', function(e) {
-        var html = Mustache.render($('#J_tmpl_proxy_item').html());
-        $dialog.find('.J_proxy_list').append(html);
-    });
-    $dialog.on('click', '.J_submit', function() {
-        var $form = $dialog.find('form');
-        var param = $form.serialize();
-        var body = qs.parse(param);
-        var newName = body.name;
-        var root = body.root;
-        var proxyDir = body.proxyDir;
-        var proxyPath = body.proxyPath;
-        var proxy = null;
-        //如果有配置代理
-        if(proxyDir && proxyPath) {
-            var proxyArr = [];
-            if(typeof proxyDir === 'string') {
-                proxyArr.push({
-                    dir: proxyDir,
-                    path: proxyPath
-                });
-            }else if(typeof proxyDir === 'object') {
-                proxyDir.forEach(function(item, i) {
-                    proxyArr.push({
-                        dir: item,
-                        path: proxyPath[i]
+    BootstrapDialog.show({
+        title: '编辑虚拟主机',
+        message: function() {
+            var html = Mustache.render($('#J_tmpl_vhost_form').html(), {
+                name: name,
+                root: root,
+                proxys: proxy.list
+            }, {
+                body: $('#J_tmpl_proxy_item').html()
+            });
+            var $dialog = $(html);
+            setTimeout(function() {
+                $dialog.find('.form-control').eq(0).focus();
+            }, 500);
+            
+            $dialog.on('click', '.J_delete', function(e) {
+                e.preventDefault();
+                var $li = $(this).closest('li');
+                $li.remove();
+            });
+            $dialog.on('click', '.J_add', function(e) {
+                var $html = $(Mustache.render($('#J_tmpl_proxy_item').html()));
+                $dialog.find('.J_proxy_list').append($html);
+                $html.find('.form-control').eq(0).focus();
+            });
+            return $dialog;
+        },
+        buttons: [
+            {
+                label: '提交',
+                cssClass: 'btn-primary',
+                action: function(dialogRef) {
+                    var $form = dialogRef.$modalContent.find('form');
+                    var param = $form.serialize();
+                    var body = qs.parse(param);
+                    var newName = body.name;
+                    var root = body.root;
+                    var proxyDir = body.proxyDir;
+                    var proxyPath = body.proxyPath;
+                    var proxy = null;
+                    //如果有配置代理
+                    if(proxyDir && proxyPath) {
+                        var proxyArr = [];
+                        if(typeof proxyDir === 'string') {
+                            proxyArr.push({
+                                dir: proxyDir,
+                                path: proxyPath
+                            });
+                        }else if(typeof proxyDir === 'object') {
+                            proxyDir.forEach(function(item, i) {
+                                proxyArr.push({
+                                    dir: item,
+                                    path: proxyPath[i]
+                                });
+                            })
+                        }
+                        proxy = proxyArr;
+                    }
+                    var obj = {
+                        name: newName,
+                        root: root,
+                        proxy: proxy || ''
+                    };
+                    httpd.updateItem(name, obj, function(err, data) {
+                        var json = {
+                            success: !err,
+                            data: httpd.getObj(data)
+                        };
+                        if(err) {
+                            return BootstrapDialog.alert({
+                                    title: '提示',
+                                    message: '更新失败',
+                                    buttonLabel: '好的'
+                                });
+                        } else {
+                            BootstrapDialog.alert({
+                                title: '提示',
+                                message: '更新成功',
+                                buttonLabel: '好的'
+                            });
+                            json._proxy = function() {
+                                return JSON.stringify(this.proxy);
+                            };
+                            var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
+                            $tr.replaceWith(html);
+                        }
                     });
-                })
+                }
+            },
+            {
+                label: '取消',
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }
             }
-            proxy = proxyArr;
-        }
-        var obj = {
-            name: newName,
-            root: root,
-            proxy: proxy || ''
-        };
-        httpd.updateItem(name, obj, function(err, data) {
-            var json = {
-                success: !err,
-                data: httpd.getObj(data)
-            };
-            if(err) {
-                return Dialog.alert('更新失败');
-            } else {
-                $dialog.modal('hide');
-                Dialog.alert('更新成功');
-                json._proxy = function() {
-                    return JSON.stringify(this.proxy);
-                };
-                var html = Mustache.render($('#J_tmpl_vhost_item').html(), json);
-                $tr.replaceWith(html);
-            }
-        });
+        ]
     });
 });
 //删除
@@ -278,9 +328,34 @@ $('#J_vhost_list').on('click', '.J_delete', function(e) {
     e.preventDefault();
     var $tr = $(this).closest('tr');
     var name = $tr.attr('data-name');
-    var result = httpd.removeItem(name);
-    Dialog.alert('删除成功');
-    $tr.remove();
+    var request = function() {
+        var result = httpd.removeItem(name);
+        BootstrapDialog.alert({
+            title: '提示',
+            message: '删除成功',
+            buttonLabel: '好的'
+        });
+        $tr.remove();
+    };
+    
+    BootstrapDialog.show({
+        title: '提示',
+        message: '真要删除吗？',
+        closable: true,
+        buttons: [{
+            label: '确定',
+            cssClass: 'btn-primary',
+            action: function(dialog) {
+                dialog.close();
+                request();
+            }
+        },{
+            label: '取消',
+            action: function(dialog) {
+                dialog.close();
+            }
+        }]
+    })
 });
 //重启apache
 $('#J_restart').on('click', function() {
@@ -293,7 +368,11 @@ $('#J_restart').on('click', function() {
             return console.log('err');
         }
         $btn.button('reset');
-        Dialog.alert('重启成功');
+        BootstrapDialog.alert({
+            title: '提示',
+            message: '重启成功',
+            buttonLabel: '好的'
+        });
     });
 });
 
@@ -316,10 +395,18 @@ $('#J_write').on('click', function() {
     var content = $('#J_host').val();
     host.write(content, function(err) {
         if(err) {
-            return Dialog.alert('写入失败');
+            return BootstrapDialog.alert({
+                title: '提示',
+                message: '写入失败',
+                buttonLabel: '好的'
+            });
         } else {
             localStorage.setItem('env-host', content);
-            Dialog.alert('写入成功');
+            BootstrapDialog.alert({
+                title: '提示',
+                message: '写入成功',
+                buttonLabel: '好的'
+            });
         }
     })
 });
@@ -331,7 +418,12 @@ if(localStorage.getItem('env-dns')) {
 $('#J_dns_read').on('click', function() {
     var result = dns.readConfigSync();
     if(!result) {
-        console.log('读取dns配置异常');
+        //console.log('读取dns配置异常');
+        BootstrapDialog.alert({
+            title: '提示',
+            message: '读取dns配置异常',
+            buttonLabel: '好的'
+        });
         return;
     }
     $('#J_textarea_dns').val(result).css('color', '#080');
@@ -344,5 +436,9 @@ $('#J_dns_write').on('click', function() {
     console.log(result);
     dns.init();
     localStorage.setItem('env-dns', content);
-    Dialog.alert('写入成功');
+    BootstrapDialog.alert({
+        title: '提示',
+        message: '写入成功',
+        buttonLabel: '好的'
+    });
 });
