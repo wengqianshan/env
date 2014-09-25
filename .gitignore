@@ -5,3 +5,5 @@ dist
 bower_components
 test/bower_components
 dns.conf
+hosts
+httpd-vhosts.conf
