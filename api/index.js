@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 var os = require('os');
 var dns = require('native-dns');
 var exec = require('child_process').exec;
@@ -365,7 +366,9 @@ Httpd.prototype = {
 
 var DNS = function(options) {
     var option = options || {};
-    this.configPath = option.configPath || './dns.conf';
+    var baseDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+    var defaultPath = path.join(baseDir, '.dnsconf');
+    this.configPath = option.configPath || defaultPath;
     this.port = option.port || 53;
     this.server = null;
 };
