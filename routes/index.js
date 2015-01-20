@@ -9,6 +9,12 @@ var httpd = new api.httpd();
 httpd.init();
 
 var host = new api.host();
+host.init(function(write) {
+    setTimeout(function() {
+        write(123456);
+        console.log('可正常使用功能了')
+    }, 4000);
+});
 
 var apache = new api.apache();
 

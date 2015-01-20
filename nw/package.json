@@ -11,6 +11,7 @@
     "max_height": 600
   },
   "dependencies": {
+    "JQDeferred": "^2.1.0",
     "native-dns": "^0.6.1",
     "qs": "^0.6.6"
   }

@@ -3,6 +3,9 @@ var path = require('path');
 var os = require('os');
 var dns = require('native-dns');
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
+var inpathSync = require('inpath').sync;
+var deferred = require("JQDeferred");
 var platform = os.platform();
 var config = require('../config');
 
@@ -93,12 +96,60 @@ Apache.prototype = {
 var Host = function() {
     this.path = Platform.isWin ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts';
     //this.path = './hosts'
+    this.password = null;
 };
 Host.prototype = {
-    //检查权限
-    checkPermission: function(mask, callback) {
-        Platform.checkPermission(this.path, mask, callback);
+    init: function(callback) {
+        var _this = this;
+        var paths = process.env['PATH'].split(':');
+        var sudoBin = inpathSync('sudo', paths);
+        var prompt = '#node-sudo-passwd#';
+        var prompts = 0;
+        var args = [ '-S', '-p', prompt, 'ls'];
+        var cachedPassword;
+        this.password = this.getPass();
+
+        var child = spawn(sudoBin, args, {
+            stdio: 'pipe'
+        });
+        child.stdout.on('data', function(data) {
+            console.log('out:', data.toString());
+        });
+        child.stderr.on('data', function (data) {
+            var lines = data.toString().trim().split('\n');
+            console.log('err:', lines)
+            lines.forEach(function (line) {
+                if (line === prompt) {
+                    if (++prompts > 1) {
+                        // The previous entry must have been incorrect, since sudo asks again.
+                        _this.password = null;
+                    }
+
+                    if (_this.password) {
+                        child.stdin.write(_this.password + '\n');
+                    } else {
+                        console.log('哎呀， 没权限啦');
+                        //child.stdin.write('123\n');
+                        var write = function(password) {
+                            console.log('密码写入前')
+                            setTimeout(function() {
+                                child.stdin.write(password + '\n');
+                            }, 3000);
+                            console.log('密码写入后')
+                            _this.password = password;
+                            _this.setPass(password);
+                        }
+                        callback && callback.call(null, write);
+                    }
+                }
+            });
+        });
+        
     },
+    //检查权限
+    /*checkPermission: function(mask, callback) {
+        Platform.checkPermission(this.path, mask, callback);
+    },*/
     read: function(callback) {
         var _this = this;
         fs.readFile(this.path, 'utf8', function(err, data) {
@@ -110,6 +161,19 @@ Host.prototype = {
         fs.writeFile(this.path, content, function(err, data) {
             callback && callback.call(_this, err);
         });
+    },
+    getPass: function() {
+        try {
+            return localStorage.getItem('password') || '';
+        } catch (e) {
+            return null;
+        }
+    },
+    setPass: function(password) {
+        try {
+            localStorage.setItem('password', password);
+        } catch (e) {
+        }
     }
 };
 
