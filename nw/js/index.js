@@ -4,6 +4,25 @@ var api = require('./js/api.js');
 var httpd = new api.httpd();
 httpd.init();
 var host = new api.host();
+host.init(function(write) {
+    BootstrapDialog.show({
+        message: '密码: <input type="text" class="form-control">',
+        onhide: function(dialogRef) {
+            var input = dialogRef.getModalBody().find('input').val();
+            if (input) {
+                write(input);
+            } else {
+                BootstrapDialog.alert('请输入密码');
+            }
+        },
+        buttons: [{
+            label: '确认',
+            action: function(dialogRef) {
+                dialogRef.close();
+            }
+        }]
+    })
+});
 var apache = new api.apache();
 var dns = new api.dns();
 dns.init();

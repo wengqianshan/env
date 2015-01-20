@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "JQDeferred": "^2.1.0",
+    "inpath": "^1.0.2",
     "native-dns": "^0.6.1",
     "qs": "^0.6.6"
   }
