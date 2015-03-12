@@ -545,6 +545,10 @@ DNS.prototype = {
             type: type
         });
         var handleAnswers = function(answers) {
+            if (!answers || answers.length < 1) {
+                console.log('handleAnswers error')
+                return;
+            }
             answers.forEach(function(item) {
                 //console.log(item.answer);
                 response.answer = response.answer.concat(item.answer);
