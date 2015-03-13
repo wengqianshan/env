@@ -554,7 +554,11 @@ DNS.prototype = {
                 response.answer = response.answer.concat(item.answer);
                 response.additional = response.additional.concat(item.additional);
             });
-            response.send();
+            try{
+                response.send();    
+            } catch(e) {
+                throw e;
+            }
         };
         var query = function(question, protocol, callback) {
             var req = dns.Request({
