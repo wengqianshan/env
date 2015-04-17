@@ -94,6 +94,7 @@ Apache.prototype = {
 
 //HOST
 var Host = function() {
+    this.tmpPath = process.env.HOME + '/.hosts';
     this.path = Platform.isWin ? 'C:/Windows/System32/drivers/etc/hosts' : '/etc/hosts';
     //this.path = './hosts'
     this.password = null;
@@ -152,7 +153,12 @@ Host.prototype = {
     },*/
     read: function(callback) {
         var _this = this;
-        fs.readFile(this.path, 'utf8', function(err, data) {
+        var p = this.path;
+        if (fs.existsSync(this.tmpPath)) {
+            console.log('找到临时文件', p);
+            p = this.tmpPath;
+        }
+        fs.readFile(p, 'utf8', function(err, data) {
             callback && callback.call(_this, err, data);
         });
     },
@@ -160,6 +166,10 @@ Host.prototype = {
         var _this = this;
         fs.writeFile(this.path, content, function(err, data) {
             callback && callback.call(_this, err);
+        });
+        fs.writeFile(this.tmpPath, content, function(err, data) {
+            console.log('写入临时文件成功')
+            //callback && callback.call(_this, err);
         });
     },
     getPass: function() {
@@ -557,7 +567,9 @@ DNS.prototype = {
             try{
                 response.send();    
             } catch(e) {
-                throw e;
+                //throw e;
+                console.log(e.message);
+                return;
             }
         };
         var query = function(question, protocol, callback) {
