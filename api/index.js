@@ -110,7 +110,7 @@ Host.prototype = {
         var cachedPassword;
         this.password = this.getPass();
 
-        var child = spawn(sudoBin, args, {
+        /*var child = spawn(sudoBin, args, {
             stdio: 'pipe'
         });
         child.stdout.on('data', function(data) {
@@ -144,7 +144,7 @@ Host.prototype = {
                     }
                 }
             });
-        });
+        });*/
         
     },
     //检查权限
