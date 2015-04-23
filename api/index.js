@@ -121,10 +121,9 @@ Host.prototype = {
         fs.writeFile(this.path, content, function(err, data) {
             callback && callback.call(_this, err);
         });
-        fs.writeFile(this.tmpPath, content, function(err, data) {
+        /*fs.writeFile(this.tmpPath, content, function(err, data) {
             console.log('写入临时文件成功')
-            //callback && callback.call(_this, err);
-        });
+        });*/
     }
 };
 
