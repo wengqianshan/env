@@ -363,6 +363,7 @@ Httpd.prototype = {
             '        AllowOverride All\n',
             '        Order allow,deny\n',
             '        Allow from all\n',
+            '        Require all granted\n',
             '    </Directory>\n'
         ];
         if(option.proxy) {
