@@ -58,3 +58,8 @@ Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
  sudo node app
  ````
 4. 浏览器打开http://localhost:5733访问
+
+
+## 常见问题
+
+* mac版本升级后出现403：找到文件`/private/etc/apache2/httpd.conf`，取消注释并设置`ServerName localhost:80`
