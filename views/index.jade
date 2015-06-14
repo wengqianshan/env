@@ -27,46 +27,9 @@ block content
         section.main
             .tab-content
                 #J_tab_home.tab-pane
-                    h4 使用帮助
-                    ul
-                        li 
-                            strong 修改host方法
-                            p 1. 进入host修改页面，先点击读取，然后在编辑框修改host，修改完毕后点击保存即可.
-                        li 
-                            strong 新建虚拟主机本地访问方法
-                            p 1. 进入虚拟主机管理页面，点击添加
-                            p 2. 输入域名和本地路径，点击提交
-                            p 3. 点击左栏的重启apache
-                            p 4. host里面加入刚才的域名，指向127.0.0.1，保存
-                            p 5. 浏览器访问刚加的域名
-                        li 
-                            strong 手机访问电脑的虚拟主机方法
-                            p 1. 进入dns页面，添加一个虚拟主机已有域名，如demo.laiwang.com
-                            p 2. 同局域网的手机设置dns为当前电脑ip
-                            p 3. 手机访问demo.laiwang.com
-                        li 
-                            strong 虚拟主机的反向代理配置方法
-                            p
-                                i 先确保已经设置dns和虚拟主机
-                            p 1. 本地开启调试环境，如http://localhost:9000/
-                            p 2. 虚拟主机添加反向代理，如： /   http://localhost:9000/
-                            p 3. 手机访问之前配置的域名
-                        li
-                            strong DNS设置方法
-                            p 支持以下3种配置方式：
-                                
-                                br
-                                code demo.laiwang.com
-                                | 将demo.laiwang.com代理到本机
-                                br
-                                code demo.laiwang.com demo2.laiwang.com
-                                | 将demo.laiwang.com demo2.laiwang.com 代理到本机
-                                br
-                                code 10.68.108.15 demo.laiwang.com demo2.laiwang.com
-                                | 将demo.laiwang.com demo2.laiwang.com代理到10.68.108.15
-                    h4 常见问题
-                    ul
-                        li 待添加...
+                    h2 Welcome !
+                        
+                    
                 #J_tab_host.tab-pane
                     h3 host操作
                     textarea.form-control(id='J_host',rows='20',cols='100')

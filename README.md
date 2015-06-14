@@ -63,3 +63,40 @@ Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
 ## 常见问题
 
 * mac版本升级后出现403：找到文件`/private/etc/apache2/httpd.conf`，取消注释并设置`ServerName localhost:80`
+
+
+
+### 使用帮助
+
+#### 新建虚拟主机本地访问方法
+1. 进入虚拟主机管理页面，点击添加
+
+2. 输入域名和本地路径，点击提交
+
+3. 点击左栏的重启apache
+
+4. host里面加入刚才的域名，指向127.0.0.1，保存
+
+5. 浏览器访问刚加的域名
+
+#### 手机访问电脑的虚拟主机方法
+1. 进入dns页面，添加一个虚拟主机已有域名，如demo.laiwang.com
+
+2. 同局域网的手机设置dns为当前电脑ip
+
+3. 手机访问demo.laiwang.com
+
+#### 虚拟主机的反向代理配置方法
+> 先确保已经设置dns和虚拟主机
+
+1. 本地开启调试环境，如http://localhost:9000/
+
+2. 虚拟主机添加反向代理，如： / http://localhost:9000/
+
+3. 手机访问之前配置的域名
+
+#### DNS设置方法
+支持以下3种配置方式：
+demo.laiwang.com将demo.laiwang.com代理到本机
+demo.laiwang.com demo2.laiwang.com将demo.laiwang.com demo2.laiwang.com 代理到本机
+10.68.108.15 demo.laiwang.com demo2.laiwang.com将demo.laiwang.com demo2.laiwang.com代理到10.68.108.15
