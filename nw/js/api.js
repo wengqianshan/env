@@ -132,9 +132,7 @@ Host.prototype = {
                         //child.stdin.write('123\n');
                         var write = function(password) {
                             console.log('密码写入前')
-                            setTimeout(function() {
-                                child.stdin.write(password + '\n');
-                            }, 3000);
+                            child.stdin.write(password + '\n');
                             console.log('密码写入后')
                             _this.password = password;
                             _this.setPass(password);

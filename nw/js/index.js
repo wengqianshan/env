@@ -5,8 +5,9 @@ var httpd = new api.httpd();
 httpd.init();
 var host = new api.host();
 host.init(function(write) {
+    console.log(write)
     BootstrapDialog.show({
-        message: '密码: <input type="text" class="form-control">',
+        message: '密码: <input type="password" class="form-control">',
         onhide: function(dialogRef) {
             var input = dialogRef.getModalBody().find('input').val();
             if (input) {
