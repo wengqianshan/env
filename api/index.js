@@ -564,6 +564,7 @@ DNS.prototype = {
     },
     onError: function(err, buff, req, res) {
         //console.log(err.stack);
+        this.server.close();
     },
     onListening: function() {
         //console.log('event: onListening');
@@ -573,6 +574,7 @@ DNS.prototype = {
     },
     onClose: function() {
         //console.log('event: onClose');
+        this.server.close();
     },
     stop: function() {
         this.server.close();
