@@ -2,6 +2,7 @@ var os = require('os');
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
+var path = require('path');
 var config = require('../config');
 var api = require('../api/index');
 //console.log(api);
@@ -28,21 +29,31 @@ router.get('/', function(req, res) {
 });
 
 //combo
-router.get('/combo', function(req, res) {
-    //console.log('++++++++++++++++++++')
+router.get('/combo/:group?/:project?/:version?/', function(req, res) {
+    console.log('++++++++++++++++++++')
+    console.log(req.params)
+    var group = req.params.group;
+    var project = req.params.project;
+    var version = req.params.version;
+    //如果没有group的情况
+    if (!version) {
+        project = null;
+    }
     var search = req._parsedUrl.search;
     if(!search || search.indexOf('??') < 0) {
         return res.send('缺少参数');
     }
-    var str = search.substr(2).replace(/ilw/g, config.combo.dir).replace(/(\d+\.){2}\d+/g, config.combo.dist).replace(/(\?|#).*$/g, '');
-    if(!str) {
-        return res.send('没有文件');
-    }
-    var files = str.split(',');
+    search = search.substr(2);
+
+    console.log(req._parsedUrl)
+    
+    var files = search.split(',');
     //console.log(files)
     var content = '';
     var errors = [];
     files.forEach(function(file){
+        file = path.join(config.combo.dir, group, project, 'build', file);
+        console.log(file)
         var exist = fs.existsSync(file);
         if(!exist) {
             errors.push('文件不存在: ' + file);
