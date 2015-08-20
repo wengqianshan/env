@@ -28,6 +28,8 @@ router.get('/', function(req, res) {
   res.render('index', { title: '本地环境工具' });
 });
 
+
+
 //combo
 router.get('/combo/:group?/:project?/:version?/', function(req, res) {
     console.log('++++++++++++++++++++')
@@ -44,6 +46,10 @@ router.get('/combo/:group?/:project?/:version?/', function(req, res) {
         return res.send('缺少参数');
     }
     search = search.substr(2);
+
+    if (search.indexOf('?') > -1) {
+        search = search.split('?')[0];
+    }
 
     console.log(req._parsedUrl)
     
@@ -65,8 +71,28 @@ router.get('/combo/:group?/:project?/:version?/', function(req, res) {
     if(errors.length > 0) {
         return res.send(errors.join('<br/>'));
     }
-    res.type('application/x-javascript');
+    if (search.indexOf('js') > -1) {
+        res.type('application/x-javascript');
+    } else if (search.indexOf('css') > -1) {
+        res.type('text/css');
+    }
     res.send(content);
+});
+
+router.get('/combo/:group?/:project?/:version?/:file', function(req, res) {
+    console.log(req.params)
+    var group = req.params.group;
+    var project = req.params.project;
+    var version = req.params.version;
+    var file = req.params.file;
+    var f = path.join(config.combo.dir, group, project, 'build', file);
+    var exist = fs.existsSync(f);
+    if(!exist) {
+        return res.send('文件不存在: ' + f);
+    }
+    var c = fs.readFileSync(f, 'utf8');
+    res.type('application/x-javascript');
+    res.send(c);
 });
 
 router.post('/', function(req, res) {
