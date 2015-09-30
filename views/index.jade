@@ -20,6 +20,10 @@ block content
                     a(href='#J_tab_dns', role='tab', data-toggle='tab')
                         span.glyphicon.glyphicon-retweet&nbsp;
                         | DNS
+                li
+                    a(href='#J_tab_proxy', role='tab', data-toggle='tab')
+                        span.glyphicon.glyphicon-retweet&nbsp;
+                        | 代理
             .quick-action
                 //button(type="button", data-toggle='tooltip', data-placement='bottom', title='检查Apache配置', id='J_apache_check', data-loading-text='检查中...').btn.btn-default 检查Apache
                 input#J_ip(readonly, style='border: none; background-color: transparent; outline: none; font-size: 2em;')
@@ -61,6 +65,12 @@ block content
                     br
                     button.btn.btn-default(id='J_dns_read', data-loading-text='读取中') 读取DNS
                     button.btn.btn-primary(id='J_dns_write') 写入DNS并重启
+                #J_tab_proxy.tab-pane
+                    h3 代理
+                    label
+                        input(type='checkbox')  
+                        | 开启https代理
+                    
     //vhost条目模板
     script(type='x-tmpl-mustache', id='J_tmpl_vhost_item')
         | {{#data}}
