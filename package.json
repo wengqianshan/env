@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "JQDeferred": "^2.1.0",
+    "anyproxy": "^3.7.6",
     "body-parser": "~1.0.0",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
