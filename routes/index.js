@@ -46,6 +46,7 @@ var apache = new api.apache();
 
 var dns = new api.dns();
 dns.init();
+var proxy = new api.proxy();
 
 
 /* GET home page. */
@@ -388,6 +389,42 @@ router.post('/api/dns', function(req, res) {
         data: result
     };
     res.jsonp(jsonp);
+});
+
+//proxy
+router.get('/api/proxy/get', function(req, res) {
+    proxy.networkGet(function(result) {
+        console.log(result);
+        var data = result || {};
+        res.jsonp(data);
+    });
+});
+router.post('/api/proxy/set', function(req, res) {
+    proxy.networkSet(function(result) {
+        if (result) {
+            res.jsonp({
+                success: true,
+            });
+        }
+    });
+});
+router.post('/api/proxy/start', function(req, res) {
+    proxy.networkStart(function(result) {
+        if (result) {
+            res.jsonp({
+                success: true,
+            });
+        }
+    });
+});
+router.post('/api/proxy/stop', function(req, res) {
+    proxy.networkStop(function(result) {
+        if (result) {
+            res.jsonp({
+                success: true,
+            });
+        }
+    });
 });
 
 module.exports = router;

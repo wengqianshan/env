@@ -431,3 +431,41 @@ $('#J_dns_write').on('click', function() {
         }
     });
 });
+
+
+//代理
+$proxyContrlBtn = $('#J_proxy_control');
+$.ajax({
+    url: '/api/proxy/get',
+    type: 'get',
+    dataType: 'jsonp',
+    success: function(json) {
+        console.log(json);
+        if (json.enabled === 'No') {
+            $proxyContrlBtn[0].checked = false;
+        } else if (json.enabled === 'Yes') {
+            $proxyContrlBtn[0].checked = true;
+        }
+    }
+});
+
+$proxyContrlBtn.on('change', function() {
+    var $this = $(this);
+    console.log(this.checked);
+    var checked = this.checked;
+    var url = '';
+    if (checked === true) {
+        url = '/api/proxy/start'
+    } else {
+        url = '/api/proxy/stop'
+    }
+    $.ajax({
+        url: url,
+        type: 'post',
+        dataType: 'jsonp',
+        success: function(json) {
+            console.log(json);
+           
+        }
+    });
+});

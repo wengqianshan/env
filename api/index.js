@@ -6,6 +6,7 @@ var exec = require('child_process').exec;
 var deferred = require("JQDeferred");
 var platform = os.platform();
 var config = require('../config');
+var argv = require('yargs').argv;
 
 
 var Platform = {
@@ -578,11 +579,97 @@ DNS.prototype = {
         this.server.close();
     }
 };
+//代理功能
+var Proxy = function() {
+    this.host = '127.0.0.1';
+    this.port = '8888';
+};
+Proxy.prototype = {
+    init: function() {
+
+    },
+    //启动代理服务
+    start: function() {
+
+    },
+    //停止代理服务
+    stop: function() {
+
+    },
+    //获取本机代理信息
+    networkGet: function(service, callback) {
+        console.log('获取代理信息', arguments.length);
+        if (arguments.length === 1) {
+            callback = service;
+            service = undefined;
+        }
+        var service = service || 'Wi-Fi';
+        exec('networksetup -getwebproxy ' + service, function(err, stdout, stderr) {
+            if (err) {
+                console.log('获取代理信息出错', err);
+                callback && callback.call(null);
+                return;
+            }
+            var reg = /(.*): (.*)(?:\r?\n)/ig;
+            var src = stdout.match(reg);
+            if (!src || src.length < 1) {
+                console.log('代理信息匹配出错');
+                callback && callback.call(null);
+                return;
+            }
+            var result = {};
+            src.forEach(function(item) {
+                var str = item.split(':');
+                var name = str[0].toLowerCase().replace(/\s[a-z]/g, function(text) {
+                    return text.trim().toUpperCase();
+                });
+                var val = str[1];
+                result[name] = val.trim();
+            });
+            console.log('当前代理信息：', result);
+            callback && callback.call(null, result);
+        });
+    },
+    //设置本机代理
+    networkSet: function(host, port, callback) {
+        var host = host || this.host;
+        var port = port || this.port;
+        exec('networksetup -setwebproxy Wi-Fi ' + host + ' ' + port, function() {
+            console.log('设置http代理成功')
+            exec('networksetup -setsecurewebproxy Wi-Fi ' + host + ' ' + port, function() {
+                console.log('设置https代理成功')
+                callback && callback.call(null, true);
+            });
+        });
+    },
+    //启用本机代理
+    networkStart: function(callback) {
+        exec('networksetup -setwebproxystate Wi-Fi on', function() {
+            console.log('开启http代理成功')
+            exec('networksetup -setsecurewebproxystate Wi-Fi on', function() {
+                console.log('开启https代理成功')
+                callback && callback.call(null, true);
+            });
+        });
+    },
+    //停止本机代理
+    networkStop: function(callback) {
+        exec('networksetup -setwebproxystate Wi-Fi off', function() {
+            console.log('关闭http代理成功')
+            exec('networksetup -setsecurewebproxystate Wi-Fi off', function() {
+                console.log('关闭https代理成功');
+                callback && callback.call(null, true);
+            });
+        });
+    }
+
+}
 
 module.exports = {
     platform: Platform,
     apache: Apache,
     httpd: Httpd,
     host: Host,
-    dns: DNS
+    dns: DNS,
+    proxy: Proxy
 };
