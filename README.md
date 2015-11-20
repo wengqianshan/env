@@ -97,6 +97,9 @@ Include (**mac和windows下路径不同**)extra/httpd-vhosts.conf
 
 #### DNS设置方法
 支持以下3种配置方式：
+
 demo.laiwang.com将demo.laiwang.com代理到本机
+
 demo.laiwang.com demo2.laiwang.com将demo.laiwang.com demo2.laiwang.com 代理到本机
+
 10.68.108.15 demo.laiwang.com demo2.laiwang.com将demo.laiwang.com demo2.laiwang.com代理到10.68.108.15
