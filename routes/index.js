@@ -396,7 +396,10 @@ router.get('/api/proxy/get', function(req, res) {
     proxy.networkGet(function(result) {
         console.log(result);
         var data = result || {};
-        res.jsonp(data);
+        res.jsonp({
+            success: true,
+            data: data
+        });
     });
 });
 router.post('/api/proxy/set', function(req, res) {

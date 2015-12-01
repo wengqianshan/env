@@ -67,6 +67,7 @@ block content
                     button.btn.btn-primary(id='J_dns_write') 写入DNS并重启
                 #J_tab_proxy.tab-pane
                     h3 代理
+                    div#J_proxy_info
                     label
                         input.i-switch#J_proxy_control(type='checkbox')  
                         
@@ -155,6 +156,17 @@ block content
                 .col-md-2
                     a.btn.btn-xs.btn-danger.J_delete(href='#')
                         span.glyphicon.glyphicon-remove
+    //代理信息
+    script(type='x-tmpl-mustache', id='J_tmpl_proxy_info')
+        | {{#data}}
+        div.from-control
+            label host：
+            span {{server}}
+        div.from-control
+            label port：
+            span {{port}}
+        | {{/data}}
+
 block footer-js
     script(src='/js/mustache.js')
     script(src='/js/index.js')

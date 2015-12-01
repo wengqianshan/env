@@ -441,11 +441,14 @@ $.ajax({
     dataType: 'jsonp',
     success: function(json) {
         console.log(json);
-        if (json.enabled === 'No') {
+        var data = json.data;
+        if (data.enabled === 'No') {
             $proxyContrlBtn[0].checked = false;
-        } else if (json.enabled === 'Yes') {
+        } else if (data.enabled === 'Yes') {
             $proxyContrlBtn[0].checked = true;
         }
+        var html = Mustache.render($('#J_tmpl_proxy_info').html(), json);
+        $('#J_proxy_info').append(html);
     }
 });
 
