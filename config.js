@@ -7,6 +7,6 @@ module.exports = {
     },
     combo: {
         dir: '/Users/xiaoshan/gitlab/',//
-        dist: 'build'
+        dist: 'src'
     }
 };

@@ -84,7 +84,7 @@ router.get('/combo/:group?/:project?/:version?/', function(req, res) {
     var content = '';
     var errors = [];
     files.forEach(function(file){
-        file = path.join(config.combo.dir, group, project, 'build', file);
+        file = path.join(config.combo.dir, group, project, config.combo.dist, file);
         console.log(file)
         var exist = fs.existsSync(file);
         if(!exist) {
@@ -111,14 +111,52 @@ router.get('/combo/:group?/:project?/:version?/:file', function(req, res) {
     var project = req.params.project;
     var version = req.params.version;
     var file = req.params.file;
-    var f = path.join(config.combo.dir, group, project, 'build', file);
-    var exist = fs.existsSync(f);
-    if(!exist) {
-        return res.send('文件不存在: ' + f);
+    var search = req._parsedUrl.search;
+    console.log(search)
+    if(!search || search.indexOf('??') < 0) {
+        var f = path.join(config.combo.dir, group, project, config.combo.dist, file);
+        var exist = fs.existsSync(f);
+        if(!exist) {
+            return res.send('文件不存在: ' + f);
+        }
+        var c = fs.readFileSync(f, 'utf8');
+        res.type('application/x-javascript');
+        res.send(c);
+    } else {
+        search = search.substr(2);
+
+        if (search.indexOf('?') > -1) {
+            search = search.split('?')[0];
+        }
+
+        console.log(req._parsedUrl)
+        
+        var files = search.split(',');
+        //console.log(files)
+        var content = '';
+        var errors = [];
+        files.forEach(function(item){
+            var f = path.join(config.combo.dir, group, project, config.combo.dist, file, item);
+            console.log(f)
+            var exist = fs.existsSync(f);
+            if(!exist) {
+                errors.push('文件不存在: ' + f);
+                return;
+            }
+            var c = fs.readFileSync(f, 'utf8');
+            content += c;
+        });
+        if(errors.length > 0) {
+            return res.send(errors.join('<br/>'));
+        }
+        if (search.indexOf('js') > -1) {
+            res.type('application/x-javascript');
+        } else if (search.indexOf('css') > -1) {
+            res.type('text/css');
+        }
+        res.send(content);
     }
-    var c = fs.readFileSync(f, 'utf8');
-    res.type('application/x-javascript');
-    res.send(c);
+    
 });
 
 router.post('/', function(req, res) {
