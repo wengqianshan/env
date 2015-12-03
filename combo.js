@@ -49,7 +49,9 @@ function loadFile(fileList, callback) {
                         content += body;
                     }
                     index ++;
+                    console.log(index + '/' + len);
                     if (index === len) {
+                        console.log('资源读取完成');
                         callback && callback({
                             content: content,
                             errors: errors
@@ -64,7 +66,9 @@ function loadFile(fileList, callback) {
         var c = fs.readFileSync(localPath, 'utf8');
         content += c;
         index ++;
+        console.log(index + '/' + len);
         if (index === len) {
+            console.log('资源读取完成');
             callback && callback({
                 content: content,
                 errors: errors
