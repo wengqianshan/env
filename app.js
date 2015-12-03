@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
+var combo = require('./combo');
 
 var app = express();
 
@@ -20,6 +21,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(req, res, next) {
+    //console.log(req._parsedUrl);
+    var parseObj = req._parsedUrl;
+    if (parseObj.pathname.indexOf('combo') > -1) {
+        return combo(req, res, parseObj);
+    } else {
+        next();
+    }
+    next();
+});
 
 app.use('/', routes);
 
