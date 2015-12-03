@@ -7,6 +7,7 @@ module.exports = {
     },
     combo: {
         dir: '/Users/xiaoshan/gitlab/',//
-        dist: 'src'
+        dist: 'src',
+        domain: 'http://g.alicdn.com/'
     }
 };
