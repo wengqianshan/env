@@ -29,7 +29,6 @@ app.use(function(req, res, next) {
     } else {
         next();
     }
-    next();
 });
 
 app.use('/', routes);
