@@ -54,6 +54,10 @@ router.get('/', function(req, res) {
   res.render('index', { title: '本地环境工具' });
 });
 
+router.get('/main', function(req, res) {
+  res.render('main', { title: 'React版' });
+});
+
 
 
 //combo

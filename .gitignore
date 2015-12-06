@@ -7,3 +7,4 @@ test/bower_components
 dns.conf
 nw/hosts
 nw/httpd-vhosts.conf
+npm-debug.log
