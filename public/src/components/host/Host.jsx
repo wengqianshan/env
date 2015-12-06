@@ -1,30 +1,29 @@
-/*import React from 'react';
-import Button from 'react-toolbox/lib/button';
-
-class InputTest extends React.Component {
-  render () {
-    return (
-      <Button label="hello world" />
-    );
-  }
-}
-
-export default InputTest;*/
-
-
 import React from 'react';
-import Button from 'react-toolbox/lib/button';
+import {Input, Button} from 'react-toolbox';
+import style from './style';
 
-const Host = () => (
-  <Button label="hello world" />
-);
+class Host extends React.Component {
+	state = {
+		multiline: true
+	};
 
-Host.propTypes = {
-  
-};
+	handleTabChange = (index) => {
+		this.setState({index});
+	};
 
-Host.defaultProps = {
-  
-};
+	handleActive = () => {
+		console.log('Special one activated');
+	};
+
+	render () {
+		return (
+		<div>
+			<Input className={style.textarea} multiline={this.state.multiline}/>
+			<Button label='读取' mini={true} raised />
+			<Button label='写入' icon='add'  primary raised />
+		</div>
+		);
+	}
+}
 
 export default Host;
