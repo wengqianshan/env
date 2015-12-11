@@ -64,6 +64,7 @@ function loadFile(fileList, callback) {
         }
         console.log('读取文件', localPath);
         var c = fs.readFileSync(localPath, 'utf8');
+        content += '/*' + localPath + '*/';//备注文件地址
         content += c;
         index ++;
         console.log(index + '/' + len);
