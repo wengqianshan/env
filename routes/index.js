@@ -61,7 +61,7 @@ router.get('/react', function(req, res) {
 
 
 //combo
-router.get('/combo/:group?/:project?/:version?/', function(req, res) {
+/*router.get('/combo/:group?/:project?/:version?/', function(req, res) {
     console.log('++++++++++++++++++++')
     console.log(req.params)
     var group = req.params.group;
@@ -161,7 +161,7 @@ router.get('/combo/:group?/:project?/:version?/:file', function(req, res) {
         res.send(content);
     }
     
-});
+});*/
 
 router.post('/', function(req, res) {
     console.log(req.body);
