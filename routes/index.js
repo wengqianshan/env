@@ -5,27 +5,6 @@ var fs = require('fs');
 var path = require('path');
 var config = require('../config');
 var api = require('../api/index');
-var anyproxy = require("anyproxy");
-var options = {
-    type          : "http",
-    port          : 8001,
-    hostname      : "localhost",
-    //rule          : require("path/to/my/ruleModule.js"),
-    dbFile        : null,  // optional, save request data to a specified file, will use in-memory db if not specified
-    webPort       : 8002,  // optional, port for web interface
-    socketPort    : 8003,  // optional, internal port for web socket, replace this when it is conflict with your own service
-    throttle      : 10,    // optional, speed limit in kb/s
-    disableWebInterface : false, //optional, set it when you don't want to use the web interface
-    interceptHttps: true, //是否开启https
-    silent        : false //optional, do not print anything into terminal. do not set it when you are still debugging.
-};
-//var proxyServer = new anyproxy.proxyServer(options);
-
-setTimeout(function() {
-    
-    //proxyServer.close();
-    //proxyServer = new anyproxy.proxyServer(options);
-}, 10000)
 
 
 

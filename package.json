@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "JQDeferred": "^2.1.0",
-    "anyproxy": "^3.7.6",
     "body-parser": "~1.0.0",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
@@ -20,31 +19,5 @@
     "request": "^2.67.0",
     "static-favicon": "~1.0.0",
     "yargs": "^3.27.0"
-  },
-  "devDependencies": {
-    "autoprefixer": "^6.1.2",
-    "babel": "^6.3.13",
-    "babel-core": "^6.3.13",
-    "babel-loader": "^6.2.0",
-    "babel-plugin-react-transform": "^1.1.1",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
-    "babel-preset-stage-0": "^6.3.13",
-    "classnames": "^2.2.1",
-    "css-loader": "^0.23.0",
-    "extract-text-webpack-plugin": "^0.9.1",
-    "node-sass": "^3.4.2",
-    "postcss-loader": "^0.8.0",
-    "react": "^0.14.3",
-    "react-addons-css-transition-group": "^0.14.3",
-    "react-dom": "^0.14.3",
-    "react-transform-catch-errors": "^1.0.0",
-    "react-transform-hmr": "^1.0.1",
-    "sass-loader": "^3.1.2",
-    "style-loader": "^0.13.0",
-    "toolbox-loader": "0.0.3",
-    "webpack": "^1.12.9",
-    "webpack-dev-middleware": "^1.4.0",
-    "webpack-hot-middleware": "^2.6.0"
   }
 }

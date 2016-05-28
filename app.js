@@ -10,20 +10,6 @@ var combo = require('./combo');
 
 var app = express();
 
-// webpack 
-/*var webpack = require('webpack');
-var webpackConfig = require('./webpack.config');
-var compiler = webpack(webpackConfig);
-app.use(require('webpack-dev-middleware')(compiler, {
-  publicPath: webpackConfig.output.publicPath,
-  stats: {
-    colors: true
-  }
-}));
-
-app.use(require('webpack-hot-middleware')(compiler));*/
-// webpack end
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
